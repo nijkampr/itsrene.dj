@@ -3,5 +3,6 @@ plugins:
 - jekyll-remote-theme # add this line to the plugins list if you already have one
 github:
   is_project_page: false
-name: It's René
-title: null
+page:
+  name: It's René
+  title: null
