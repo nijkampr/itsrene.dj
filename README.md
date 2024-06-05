@@ -1,4 +1,4 @@
-# <img src="banner.png" alt="drawing" width=90%/>
+<img src="banner.png" alt="drawing" width=90%/>
 
 <img src="profilepic.jpeg" alt="profile picture" width=40%/>
 
