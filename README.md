@@ -1,6 +1,7 @@
-<img src="banner.png" alt="drawing" width=90%/>
 
-<img src="profilepic.jpeg" alt="profile picture" width=40%/>
+<img src="banner.png" alt="banner" width="600"/>
+
+<img src="profilepic.jpeg" alt="profile picture" width="200"/>
 
 At some point in the future this site will be updated.
 
