@@ -1,6 +1,6 @@
-# ItsRene.DJ
+# <img src="banner.png" alt="drawing" width=90%/>
 
-<img src="profilepic.jpeg" alt="drawing" width="400"/>
+<img src="profilepic.jpeg" alt="profile picture" width=40%/>
 
 At some point in the future this site will be updates.
 
