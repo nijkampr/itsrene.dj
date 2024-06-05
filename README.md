@@ -2,7 +2,7 @@
 
 <img src="profilepic.jpeg" alt="profile picture" width=40%/>
 
-At some point in the future this site will be updates.
+At some point in the future this site will be updated.
 
 
 Check out for now:
