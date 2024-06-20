@@ -1,7 +1,7 @@
 
 <img src="banner.png" alt="banner" width="600"/>
 
-<img src="profilepic.jpeg" alt="profile picture" width="200"/>
+<img src="images/gotoams_2024.jpg" alt="profile picture" width="600"/>
 
 At some point in the future this site will be updated.
 
