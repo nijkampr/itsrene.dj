@@ -1,6 +1,7 @@
 remote_theme: pages-themes/hacker@v0.2.0
 plugins:
 - jekyll-remote-theme # add this line to the plugins list if you already have one
+- jekyll-seo-tag
 github:
   is_project_page: false
 show_downloads: false
@@ -8,5 +9,16 @@ is_project_page: false
 title: It's René
 description: It's René, your DJ for lifestreams and IRL parties. From mainstream to underground, he plays it.
 logo: ./android-chrome-512x512.png
-image: ./android-chrome-512x512.png
- 
+
+social:
+  name: It's René
+  links:
+    - https://soundcloud.com/itsrene_nl
+    - https://www.twitch.tv/itsrene_nl
+    - https://www.instagram.com/itsrene_nl
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      image: /android-chrome-512x512.png
