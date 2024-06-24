@@ -13,8 +13,6 @@ Check out for now:
 [Soundcloud](https://soundcloud.com/itsrene_nl) | 
 [Instagram](https://www.instagram.com/itsrene_nl/)
 
-{% include slider.html selector="slider2" %}
-
 
 For all enquiries, please [e-mail](mailto:rene@itsrene.nl) me
 
