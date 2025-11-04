@@ -11,6 +11,13 @@
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://www.itsrene.dj">
     
+    <!-- Performance Hints -->
+    <link rel="preconnect" href="https://www.twitch.tv">
+    <link rel="preconnect" href="https://soundcloud.com">
+    <link rel="preconnect" href="https://w.soundcloud.com">
+    <link rel="preconnect" href="https://www.instagram.com">
+    <link rel="dns-prefetch" href="https://ko-fi.com">
+    
     <!-- Open Graph -->
     <meta property="og:title" content="IT'S RENÉ - DJ | From Mainstream to Underground">
     <meta property="og:description" content="Amsterdam-based DJ taking dance floors from progressive house to hardstyle. Available for bookings.">
@@ -218,8 +225,20 @@
             "@type": "Answer",
             "text": "DJ René brings his own Traktor controller and USB sticks. He can also work with any CDJ/mixer setup at your venue. Professional, reliable, and flexible."
           }
-        }
-      ]
+        ]
+      }
+    }
+    </script>
+    
+    <!-- Contact Point Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ContactPoint",
+      "contactType": "Booking Inquiries",
+      "email": "dj@itsrene.nl",
+      "areaServed": ["NL", "EU"],
+      "availableLanguage": ["English", "Dutch"]
     }
     </script>
     
@@ -516,9 +535,35 @@
             transition: transform 0.15s ease-out;
             mix-blend-mode: screen;
         }
+        
+        /* Accessibility - Skip Link */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #4DD6FF;
+            color: #000;
+            padding: 8px 16px;
+            text-decoration: none;
+            font-weight: bold;
+            z-index: 10000;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+        
+        /* Better focus states for accessibility */
+        a:focus,
+        button:focus {
+            outline: 2px solid #4DD6FF;
+            outline-offset: 2px;
+        }
     </style>
 </head>
 <body class="antialiased">
+    
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     
     <!-- Cursor glow effect -->
     <div class="cursor-glow" id="cursorGlow"></div>
@@ -535,6 +580,7 @@
     </div>
 
     <!-- HERO SECTION - ASYMMETRIC LAYOUT -->
+    <main id="main-content">
     <section class="px-4 md:px-8 lg:px-16 py-12 relative overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-br from-dark-bg via-darker-bg to-dark-bg"></div>
         
@@ -746,8 +792,9 @@
             </div>
             
             <div class="text-center">
-                <a href="https://www.twitch.tv/itsrene_nl" target="_blank" 
-                   class="inline-block bg-purple-600 hover:bg-purple-700 text-white px-10 py-4 rounded-lg font-bold text-lg transition-all hover-glow">
+                <a href="https://www.twitch.tv/itsrene_nl" target="_blank" rel="noopener"
+                   class="inline-block bg-purple-600 hover:bg-purple-700 text-white px-10 py-4 rounded-lg font-bold text-lg transition-all hover-glow"
+                   aria-label="Watch my live DJ sets on Twitch">
                     WATCH ON TWITCH
                 </a>
             </div>
@@ -882,7 +929,8 @@
             <div class="bg-darker-bg p-8 rounded-lg inline-block">
                 <p class="text-sm text-gray-400 mb-2">EMAIL FOR BOOKINGS</p>
                 <a href="mailto:dj@itsrene.nl" 
-                   class="text-3xl font-bold text-neon-red hover:underline">
+                   class="text-3xl font-bold text-neon-red hover:underline"
+                   aria-label="Send booking inquiry email to dj@itsrene.nl">
                     dj@itsrene.nl
                 </a>
             </div>
@@ -900,33 +948,37 @@
     <section class="py-12 px-4 bg-darker-bg">
         <div class="max-w-4xl mx-auto">
             <div class="flex flex-wrap justify-center gap-6">
-                <a href="https://www.twitch.tv/itsrene_nl" target="_blank" 
-                   class="flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg font-semibold transition-all hover-glow">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <a href="https://www.twitch.tv/itsrene_nl" target="_blank" rel="me noopener"
+                   class="flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg font-semibold transition-all hover-glow"
+                   aria-label="Visit my Twitch channel">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/>
                     </svg>
                     Twitch
                 </a>
                 
-                <a href="https://soundcloud.com/itsrene_nl" target="_blank" 
-                   class="flex items-center gap-2 px-6 py-3 bg-orange-600 hover:bg-orange-700 rounded-lg font-semibold transition-all hover-glow">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <a href="https://soundcloud.com/itsrene_nl" target="_blank" rel="me noopener"
+                   class="flex items-center gap-2 px-6 py-3 bg-orange-600 hover:bg-orange-700 rounded-lg font-semibold transition-all hover-glow"
+                   aria-label="Listen to my mixes on SoundCloud">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M1.175 12.225c-.051 0-.094.046-.101.1l-.233 2.154.233 2.105c.007.058.05.098.101.098.05 0 .09-.04.099-.098l.255-2.105-.27-2.154c0-.057-.045-.1-.09-.1m-.899.828c-.051 0-.09.04-.099.098l-.255 2.105.27 2.154c0 .057.045.1.09.1.05 0 .09-.04.099-.098l.254-2.105-.254-2.154c-.009-.057-.05-.1-.1-.1m1.798-.899c-.06 0-.11.051-.117.111l-.209 2.176.209 2.076c.008.06.057.11.117.11.06 0 .108-.05.116-.11l.235-2.076-.235-2.176c-.008-.06-.056-.11-.116-.11m.899.06c-.06 0-.111.05-.119.11l-.189 2.116.189 2.075c.008.06.059.11.119.11.06 0 .111-.05.119-.11l.209-2.075-.209-2.116c-.008-.06-.059-.11-.119-.11m.899-.06c-.068 0-.118.058-.125.118l-.17 2.176.17 2.076c.007.059.057.117.125.117.067 0 .117-.058.125-.117l.189-2.076-.189-2.176c-.008-.06-.058-.118-.125-.118m.899.06c-.068 0-.118.058-.126.118l-.151 2.116.151 2.075c.008.06.058.118.126.118.067 0 .117-.058.124-.118l.171-2.075-.171-2.116c-.007-.06-.057-.118-.124-.118m.899-.06c-.075 0-.132.06-.139.118l-.132 2.176.132 2.076c.007.059.064.117.139.117.074 0 .131-.058.139-.117l.151-2.076-.151-2.176c-.008-.059-.065-.118-.139-.118m.899.06c-.074 0-.131.058-.139.117l-.113 2.117.113 2.075c.008.059.065.117.139.117.075 0 .132-.058.14-.117l.13-2.075-.13-2.117c-.008-.059-.065-.117-.14-.117m.899-.059c-.082 0-.145.063-.153.121l-.094 2.176.094 2.076c.008.059.071.121.153.121.081 0 .145-.062.152-.121l.114-2.076-.114-2.176c-.007-.058-.071-.121-.152-.121m.899.059c-.082 0-.145.063-.153.121l-.075 2.117.075 2.075c.008.059.071.121.153.121.081 0 .145-.062.152-.121l.095-2.075-.095-2.117c-.007-.058-.071-.121-.152-.121m.899-.059c-.09 0-.153.066-.161.125l-.057 2.176.057 2.076c.008.06.071.125.161.125.089 0 .152-.065.16-.125l.076-2.076-.076-2.176c-.008-.059-.071-.125-.16-.125m.899.059c-.09 0-.153.066-.161.125l-.038 2.117.038 2.075c.008.06.071.125.161.125.089 0 .152-.065.161-.125l.056-2.075-.056-2.117c-.009-.059-.072-.125-.161-.125m.9-.059c-.1 0-.162.07-.171.129l-.019 2.176.019 2.076c.009.059.071.129.171.129.098 0 .161-.07.169-.129l.037-2.076-.037-2.176c-.008-.059-.071-.129-.169-.129m.899.059c-.1 0-.162.07-.17.129l-.001 2.117.001 2.075c.008.059.07.129.17.129.098 0 .162-.07.169-.129l.019-2.075-.019-2.117c-.007-.059-.071-.129-.169-.129"/>
                     </svg>
                     SoundCloud
                 </a>
                 
-                <a href="https://www.instagram.com/itsrene_nl/" target="_blank" 
-                   class="flex items-center gap-2 px-6 py-3 bg-pink-600 hover:bg-pink-700 rounded-lg font-semibold transition-all hover-glow">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <a href="https://www.instagram.com/itsrene_nl/" target="_blank" rel="me noopener"
+                   class="flex items-center gap-2 px-6 py-3 bg-pink-600 hover:bg-pink-700 rounded-lg font-semibold transition-all hover-glow"
+                   aria-label="Follow me on Instagram">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                     </svg>
                     Instagram
                 </a>
                 
-                <a href="https://ko-fi.com/itsrene_nl" target="_blank" 
-                   class="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition-all hover-glow">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <a href="https://ko-fi.com/itsrene_nl" target="_blank" rel="me noopener"
+                   class="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition-all hover-glow"
+                   aria-label="Buy me a coffee on Ko-fi">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604 0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734 4.352.24 7.422-2.831 6.649-6.916zm-11.062 3.511c-1.246 1.453-4.011 3.976-4.011 3.976s-.121.119-.31.023c-.076-.057-.108-.09-.108-.09-.443-.441-3.368-3.049-4.034-3.954-.709-.965-1.041-2.7-.091-3.71.951-1.01 3.005-1.086 4.363.407 0 0 1.565-1.782 3.468-.963 1.904.82 1.832 3.011.723 4.311zm6.173.478c-.928.116-1.682.028-1.682.028V7.284h1.77s1.971.551 1.971 2.638c0 1.913-.985 2.667-2.059 3.015z"/>
                     </svg>
                     Buy Me a Coffee
@@ -934,6 +986,7 @@
             </div>
         </div>
     </section>
+    </main>
 
     <!-- FOOTER -->
     <footer class="py-8 px-4 text-center text-gray-500 text-sm">
