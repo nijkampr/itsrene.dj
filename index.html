@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT'S RENÉ - DJ | From Mainstream to Underground</title>
+    <meta name="description" content="Amsterdam-based DJ. Hard techno to melodic house. Clubs, festivals, private parties. Available for bookings.">
+    <meta name="keywords" content="DJ, Amsterdam, techno, house, hardstyle, EDM, DJ booking, live sets, Twitch DJ, Team Brisk, Birdcage Radio">
+    <meta name="author" content="René">
+    <meta name="theme-color" content="#4DD6FF">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="IT'S RENÉ - DJ | From Mainstream to Underground">
+    <meta property="og:description" content="Amsterdam-based DJ taking dance floors from progressive house to hardstyle. Available for bookings.">
+    <meta property="og:image" content="./images/headshot.jpg">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.itsrene.dj">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="IT'S RENÉ - DJ">
+    <meta name="twitter:description" content="Amsterdam DJ • Hard Techno to Melodic House • Available for Bookings">
+    <meta name="twitter:image" content="./images/headshot.jpg">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'neon-red': '#4DD6FF',
+                        'neon-cyan': '#4DD6FF',
+                        'dark-bg': '#0a0a0a',
+                        'darker-bg': '#050505',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background: #0a0a0a;
+            color: #ffffff;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Animated background grid */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(77, 214, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(77, 214, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 0;
+            pointer-events: none;
+            animation: gridMove 20s linear infinite;
+        }
+        
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+        
+        /* Floating particles */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle, rgba(77, 214, 255, 0.1) 1px, transparent 1px),
+                radial-gradient(circle, rgba(77, 214, 255, 0.05) 1px, transparent 1px);
+            background-size: 100px 100px, 150px 150px;
+            background-position: 0 0, 50px 50px;
+            z-index: 0;
+            pointer-events: none;
+            animation: particleFloat 30s ease-in-out infinite;
+        }
+        
+        @keyframes particleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        section {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-text {
+            text-shadow: 0 0 40px rgba(77, 214, 255, 0.8),
+                         0 0 80px rgba(77, 214, 255, 0.4);
+            animation: textPulse 3s ease-in-out infinite;
+        }
+        
+        @keyframes textPulse {
+            0%, 100% { text-shadow: 0 0 40px rgba(77, 214, 255, 0.8), 0 0 80px rgba(77, 214, 255, 0.4); }
+            50% { text-shadow: 0 0 60px rgba(77, 214, 255, 1), 0 0 120px rgba(77, 214, 255, 0.6); }
+        }
+        
+        .glow {
+            box-shadow: 0 0 30px rgba(77, 214, 255, 0.5),
+                        0 0 60px rgba(77, 214, 255, 0.2);
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(77, 214, 255, 0.5), 0 0 60px rgba(77, 214, 255, 0.2); }
+            50% { box-shadow: 0 0 40px rgba(77, 214, 255, 0.7), 0 0 80px rgba(77, 214, 255, 0.3); }
+        }
+        
+        .hover-glow:hover {
+            box-shadow: 0 0 40px rgba(77, 214, 255, 0.8),
+                        0 0 80px rgba(77, 214, 255, 0.4),
+                        inset 0 0 20px rgba(77, 214, 255, 0.1);
+            transform: translateY(-4px) scale(1.02);
+            transition: all 0.3s ease;
+        }
+        
+        .section-divide {
+            background: linear-gradient(90deg, transparent, #4DD6FF, transparent);
+            height: 2px;
+            box-shadow: 0 0 10px rgba(77, 214, 255, 0.5);
+            animation: divideGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes divideGlow {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        
+        iframe {
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+        
+        .action-shot {
+            transition: transform 0.4s ease, filter 0.4s ease, box-shadow 0.4s ease;
+            filter: grayscale(30%) brightness(0.9);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        .action-shot:hover {
+            transform: scale(1.08) rotate(1deg);
+            filter: grayscale(0%) brightness(1.1);
+            box-shadow: 0 12px 40px rgba(77, 214, 255, 0.3),
+                        0 0 60px rgba(77, 214, 255, 0.2);
+        }
+        
+        /* Card effects */
+        .bg-darker-bg, .bg-dark-bg {
+            background: linear-gradient(135deg, rgba(10, 10, 10, 0.9), rgba(20, 20, 20, 0.9));
+            border: 1px solid rgba(77, 214, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                        inset 0 1px 0 rgba(77, 214, 255, 0.05);
+        }
+        
+        /* Neon underline effect for links */
+        a.hover\:underline {
+            position: relative;
+            text-decoration: none;
+        }
+        
+        a.hover\:underline::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #4DD6FF, #6DE0FF);
+            box-shadow: 0 0 10px rgba(77, 214, 255, 0.5);
+            transition: width 0.3s ease;
+        }
+        
+        a.hover\:underline:hover::after {
+            width: 100%;
+        }
+        
+        /* Button enhancements */
+        .bg-neon-red {
+            background: linear-gradient(135deg, #4DD6FF, #6DE0FF);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .bg-neon-red::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .bg-neon-red:hover::before {
+            left: 100%;
+        }
+        
+        /* Scroll indicator animation */
+        .animate-bounce {
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+        
+        /* Waveform visualizer */
+        .waveform {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: flex-end;
+            gap: 4px;
+            height: 200px;
+            opacity: 0.15;
+            z-index: 1;
+        }
+        
+        .waveform-bar {
+            width: 4px;
+            background: linear-gradient(to top, #4DD6FF, #6DE0FF);
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(77, 214, 255, 0.5);
+        }
+        
+        .waveform-bar:nth-child(1) { animation: wave 1.2s ease-in-out infinite; animation-delay: 0s; }
+        .waveform-bar:nth-child(2) { animation: wave 1.1s ease-in-out infinite; animation-delay: 0.1s; }
+        .waveform-bar:nth-child(3) { animation: wave 1.3s ease-in-out infinite; animation-delay: 0.2s; }
+        .waveform-bar:nth-child(4) { animation: wave 0.9s ease-in-out infinite; animation-delay: 0.3s; }
+        .waveform-bar:nth-child(5) { animation: wave 1.4s ease-in-out infinite; animation-delay: 0.4s; }
+        .waveform-bar:nth-child(6) { animation: wave 1.0s ease-in-out infinite; animation-delay: 0.5s; }
+        .waveform-bar:nth-child(7) { animation: wave 1.2s ease-in-out infinite; animation-delay: 0.6s; }
+        .waveform-bar:nth-child(8) { animation: wave 1.1s ease-in-out infinite; animation-delay: 0.7s; }
+        .waveform-bar:nth-child(9) { animation: wave 1.3s ease-in-out infinite; animation-delay: 0.8s; }
+        .waveform-bar:nth-child(10) { animation: wave 0.95s ease-in-out infinite; animation-delay: 0.9s; }
+        .waveform-bar:nth-child(11) { animation: wave 1.15s ease-in-out infinite; animation-delay: 1.0s; }
+        .waveform-bar:nth-child(12) { animation: wave 1.25s ease-in-out infinite; animation-delay: 1.1s; }
+        
+        @keyframes wave {
+            0%, 100% { height: 20%; }
+            50% { height: 100%; }
+        }
+        
+        /* Page load animations */
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+        .delay-600 { animation-delay: 0.6s; }
+        .delay-700 { animation-delay: 0.7s; }
+        
+        /* BPM Counter */
+        .bpm-counter {
+            font-variant-numeric: tabular-nums;
+            font-feature-settings: "tnum";
+        }
+        
+        /* Cursor glow effect */
+        .cursor-glow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(77, 214, 255, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.15s ease-out;
+            mix-blend-mode: screen;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    
+    <!-- Cursor glow effect -->
+    <div class="cursor-glow" id="cursorGlow"></div>
+
+    <!-- BANNER HEADER -->
+    <div class="w-full relative overflow-hidden bg-dark-bg pb-0 fade-in">
+        <img src="./images/banner.png" 
+             alt="It's René DJ Banner" 
+             class="w-full h-auto object-contain object-center"
+             style="filter: brightness(1.1) contrast(1.2) saturate(1.1); max-height: 280px;">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-dark-bg opacity-20 pointer-events-none"></div>
+        <!-- Glow effect under banner -->
+        <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-dark-bg via-transparent to-transparent"></div>
+    </div>
+
+    <!-- HERO SECTION - ASYMMETRIC LAYOUT -->
+    <section class="px-4 md:px-8 lg:px-16 py-12 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-dark-bg via-darker-bg to-dark-bg"></div>
+        
+        <!-- Diagonal accent line -->
+        <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-bl from-neon-red/5 to-transparent skew-x-12 transform origin-top-right"></div>
+        
+        <!-- Waveform visualizer -->
+        <div class="waveform">
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+        </div>
+        
+        <div class="relative z-10 max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[70vh]">
+                <!-- Left: Content -->
+                <div class="order-2 lg:order-1">
+                    <div class="inline-block mb-4 px-4 py-1 bg-neon-red/10 border border-neon-red/30 rounded-full fade-in-up delay-100">
+                        <span class="text-neon-red text-sm font-bold tracking-wider">AMSTERDAM DJ</span>
+                    </div>
+                    
+                    <h1 class="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter hero-text mb-4 leading-none fade-in-up delay-200">
+                        IT'S<br/>RENÉ
+                    </h1>
+                    
+                    <div class="w-24 h-1 bg-gradient-to-r from-neon-red to-transparent mb-6 fade-in delay-300"></div>
+                    
+                    <p class="text-2xl md:text-3xl font-light text-gray-300 mb-8 fade-in-up delay-300">
+                        From Mainstream<br/>
+                        <span class="text-neon-red">to Underground</span>
+                    </p>
+                    
+                    <p class="text-base text-gray-400 mb-6 leading-relaxed max-w-xl fade-in-up delay-400">
+                        Started DJing at 15 in Sexbierum. COVID brought me back to the decks. Now I'm taking floors from progressive house to hardstyle—<span class="text-neon-red font-semibold">zero to absolute chaos</span>.
+                    </p>
+                    
+                    <div class="flex flex-wrap gap-3 mb-8 fade-in-up delay-500">
+                        <span class="px-3 py-1 bg-darker-bg border border-neon-red/20 rounded text-xs text-gray-400">TECHNO</span>
+                        <span class="px-3 py-1 bg-darker-bg border border-neon-red/20 rounded text-xs text-gray-400">HARDSTYLE</span>
+                        <span class="px-3 py-1 bg-darker-bg border border-neon-red/20 rounded text-xs text-gray-400">PROGRESSIVE</span>
+                        <span class="px-3 py-1 bg-darker-bg border border-neon-red/20 rounded text-xs text-gray-400">OPEN FORMAT</span>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-4 fade-in-up delay-600">
+                        <a href="#book" class="bg-neon-red text-white px-8 py-4 rounded-lg font-bold text-base hover-glow inline-flex items-center gap-2">
+                            BOOK ME
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                            </svg>
+                        </a>
+                        <a href="#listen" class="border-2 border-neon-red text-neon-red px-8 py-4 rounded-lg font-bold text-base hover-glow">
+                            LISTEN NOW
+                        </a>
+                    </div>
+                    
+                    <div class="mt-8 flex items-center gap-4 text-sm text-gray-500 fade-in delay-600">
+                        <span>Part of</span>
+                        <a href="https://www.twitch.tv/team/teambrisk" target="_blank" class="text-neon-red hover:underline font-semibold">Team Brisk</a>
+                        <span>•</span>
+                        <a href="https://www.twitch.tv/team/birdcageradio" target="_blank" class="text-neon-red hover:underline font-semibold">Birdcage Radio</a>
+                    </div>
+                </div>
+                
+                <!-- Right: Headshot with stats -->
+                <div class="order-1 lg:order-2 relative fade-in-up delay-200">
+                    <div class="relative inline-block">
+                        <!-- Large headshot -->
+                        <img src="./images/headshot.jpg" 
+                             alt="DJ René" 
+                             class="w-full max-w-md mx-auto rounded-2xl object-cover border-4 border-neon-red glow shadow-2xl"
+                             style="aspect-ratio: 3/4;">
+                        
+                        <!-- Floating stat cards -->
+                        <div class="absolute -top-4 -right-4 bg-darker-bg border-2 border-neon-red p-4 rounded-lg shadow-xl hover-glow fade-in delay-400">
+                            <div class="text-3xl font-black text-neon-red">270+</div>
+                            <div class="text-xs text-gray-400 uppercase">Peak Viewers</div>
+                        </div>
+                        
+                        <div class="absolute -bottom-4 -left-4 bg-darker-bg border-2 border-neon-red p-4 rounded-lg shadow-xl hover-glow fade-in delay-500">
+                            <div class="text-3xl font-black text-neon-red">500+</div>
+                            <div class="text-xs text-gray-400 uppercase">Hours Streamed</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LISTEN SECTION -->
+    <section id="listen" class="py-20 px-4 md:px-8 lg:px-16 bg-darker-bg">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-end justify-between mb-12">
+                <div>
+                    <h2 class="text-5xl md:text-7xl font-black tracking-tight mb-2">
+                        LISTEN
+                    </h2>
+                    <div class="w-32 h-1 bg-gradient-to-r from-neon-red to-transparent"></div>
+                </div>
+                <a href="https://soundcloud.com/itsrene_nl" target="_blank" 
+                   class="hidden md:inline-flex items-center text-neon-red font-bold hover:underline">
+                    ALL SETS
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                    </svg>
+                </a>
+            </div>
+            
+            <!-- Featured Set - Large -->
+            <div class="mb-8">
+                <div class="bg-dark-bg p-6 md:p-8 rounded-2xl border border-neon-red/20 hover-glow">
+                    <h3 class="text-2xl font-bold mb-3 text-neon-red">🔥 LATEST: LOADS OF TECHNO</h3>
+                    <p class="text-sm text-gray-400 mb-6">August 2025 • Pure hard techno energy • My most recent banger</p>
+                    <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" 
+                        src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/itsrene_nl/2025-08-17-loads-of-techno&color=%234DD6FF&auto_play=false&hide_related=false&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=true">
+                    </iframe>
+                    <p class="text-gray-300 mt-4 text-sm leading-relaxed">
+                        When I say "loads of techno," I mean it. This set is relentless—hard kicks, driving basslines, and absolutely no mercy. Perfect for when you want the floor shaking.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Grid of other sets - Compact cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-dark-bg p-5 rounded-xl border border-neon-red/10 hover-glow">
+                    <div class="text-xs text-neon-red font-bold mb-2 uppercase tracking-wide">May 2024</div>
+                    <h3 class="text-lg font-bold mb-3 text-white">Mainframe May</h3>
+                    <iframe width="100%" height="140" scrolling="no" frameborder="no" allow="autoplay"
+                        src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/itsrene_nl/2024-05-11-mainframe-may-edition&color=%234DD6FF&auto_play=false&hide_related=false&show_comments=false&show_user=true&show_reposts=false&show_teaser=false">
+                    </iframe>
+                </div>
+                
+                <div class="bg-dark-bg p-5 rounded-xl border border-neon-red/10 hover-glow">
+                    <div class="text-xs text-neon-red font-bold mb-2 uppercase tracking-wide">Jun 2023 • 82 Plays</div>
+                    <h3 class="text-lg font-bold mb-3 text-white">Hardest Set Ever</h3>
+                    <iframe width="100%" height="140" scrolling="no" frameborder="no" allow="autoplay"
+                        src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/itsrene_nl/2023-06-28-potentially-my-hardest-set-ever&color=%234DD6FF&auto_play=false&hide_related=false&show_comments=false&show_user=true&show_reposts=false&show_teaser=false">
+                    </iframe>
+                </div>
+                
+                <div class="bg-dark-bg p-5 rounded-xl border border-neon-red/10 hover-glow">
+                    <div class="text-xs text-neon-red font-bold mb-2 uppercase tracking-wide">Jan 2024 • 77 Plays</div>
+                    <h3 class="text-lg font-bold mb-3 text-white">Thursday Thumpers</h3>
+                    <iframe width="100%" height="140" scrolling="no" frameborder="no" allow="autoplay"
+                        src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/itsrene_nl/2024-01-12-open-format-thursday-thumpers&color=%234DD6FF&auto_play=false&hide_related=false&show_comments=false&show_user=true&show_reposts=false&show_teaser=false">
+                    </iframe>
+                </div>
+                
+                <div class="bg-dark-bg p-5 rounded-xl border border-neon-red/10 hover-glow">
+                    <div class="text-xs text-neon-red font-bold mb-2 uppercase tracking-wide">Classic</div>
+                    <h3 class="text-lg font-bold mb-3 text-white">Coxfest Megamix</h3>
+                    <iframe width="100%" height="140" scrolling="no" frameborder="no" allow="autoplay"
+                        src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/itsrene_nl/coxfest-the-chris-cox-megamix&color=%234DD6FF&auto_play=false&hide_related=false&show_comments=false&show_user=true&show_reposts=false&show_teaser=false">
+                    </iframe>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12 md:hidden">
+                <a href="https://soundcloud.com/itsrene_nl" target="_blank" 
+                   class="inline-flex items-center text-neon-red font-bold hover:underline">
+                    ALL SETS ON SOUNDCLOUD
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- LIVE SECTION -->
+    <section class="py-20 px-4 bg-darker-bg">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-4xl md:text-6xl font-black mb-6 tracking-tight text-center">
+                CATCH ME LIVE
+            </h2>
+            <p class="text-gray-400 text-lg mb-12 text-center max-w-3xl mx-auto">
+                I stream regularly on <span class="text-purple-400 font-semibold">Twitch</span> as part of <a href="https://www.twitch.tv/team/teambrisk" target="_blank" class="text-neon-red font-semibold hover:underline">Team Brisk</a> and <a href="https://www.twitch.tv/team/birdcageradio" target="_blank" class="text-neon-red font-semibold hover:underline">Birdcage Radio</a>. Expect anything from melodic house warm-ups to full-blown techno chaos. Peak viewer count hit 270+ across 500+ hours streamed. Come for the music, stay for the vibes.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
+                <div class="bg-dark-bg p-6 rounded-lg">
+                    <h3 class="text-xl font-bold text-neon-red mb-3">🎧 WHAT TO EXPECT</h3>
+                    <ul class="text-gray-300 space-y-2 text-sm">
+                        <li>• Live DJ sets—no pre-recorded bullshit</li>
+                        <li>• Genre-bending journeys (progressive → hardstyle)</li>
+                        <li>• Collaborations with Team Brisk & Birdcage Radio crew</li>
+                        <li>• Chat interaction (when I'm not lost in the mix)</li>
+                        <li>• Occasional guest appearances and back-to-backs</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-dark-bg p-6 rounded-lg">
+                    <h3 class="text-xl font-bold text-neon-red mb-3">📅 WHEN I STREAM</h3>
+                    <p class="text-gray-300 text-sm mb-4">
+                        No fixed schedule because life as a platform engineer doesn't allow for that. But I try to stream weekly, usually evenings (CET). 
+                    </p>
+                    <p class="text-gray-400 text-xs italic">
+                        Follow on Twitch to get notifications when I go live. Or just stalk my socials like a normal person.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <a href="https://www.twitch.tv/itsrene_nl" target="_blank" 
+                   class="inline-block bg-purple-600 hover:bg-purple-700 text-white px-10 py-4 rounded-lg font-bold text-lg transition-all hover-glow">
+                    WATCH ON TWITCH
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ACTION SHOTS -->
+    <section class="py-20 px-4">
+        <div class="section-divide mb-16"></div>
+        
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-4xl md:text-6xl font-black text-center mb-12 tracking-tight">
+                IN ACTION
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="overflow-hidden rounded-lg">
+                    <img src="./images/actionshots/53799606763_6e1930e6e3_o.jpg" 
+                         alt="DJ René performing" 
+                         class="w-full h-full object-cover action-shot">
+                </div>
+                <div class="overflow-hidden rounded-lg">
+                    <img src="./images/actionshots/53799606928_2f35cccc61_o.jpg" 
+                         alt="DJ René at decks" 
+                         class="w-full h-full object-cover action-shot">
+                </div>
+                <div class="overflow-hidden rounded-lg">
+                    <img src="./images/actionshots/FB_IMG_1697890143498.jpg" 
+                         alt="DJ René live set" 
+                         class="w-full h-full object-cover action-shot">
+                </div>
+                <div class="overflow-hidden rounded-lg">
+                    <img src="./images/actionshots/bb_summerparty.jpg" 
+                         alt="DJ René at BB Summer Party" 
+                         class="w-full h-full object-cover action-shot">
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <p class="text-gray-400 text-lg">
+                    📍 Conference Closing Parties • ADE • GoToAms • Online Streams
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHAT I DO -->
+    <section class="py-20 px-4 bg-darker-bg">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-4xl md:text-6xl font-black text-center mb-12 tracking-tight">
+                THE SOUND
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <div class="bg-dark-bg p-8 rounded-lg">
+                    <h3 class="text-2xl font-bold text-neon-red mb-4">MY SIGNATURE</h3>
+                    <p class="text-gray-300 leading-relaxed text-sm">
+                        I build energy like a story. We start with progressive grooves, melodic house, deep vibes—ease into it. Then the tempo climbs. Party bangers. Harder techno. Hardstyle. And if the crowd's with me? Full-blown gabber and frenchcore chaos. My signature is the journey from zero to peak destruction. I read the room, anticipate what's next, and take people somewhere they didn't expect.
+                    </p>
+                </div>
+                
+                <div class="bg-dark-bg p-8 rounded-lg">
+                    <h3 class="text-2xl font-bold text-neon-red mb-4">GENRE RANGE</h3>
+                    <ul class="text-gray-300 space-y-2 text-sm">
+                        <li>✦ <strong>Progressive House</strong> — Where we start</li>
+                        <li>✦ <strong>Melodic Techno</strong> — Building atmosphere</li>
+                        <li>✦ <strong>Hard Techno</strong> — My default zone</li>
+                        <li>✦ <strong>Party Bangers</strong> — Crowd pleasers</li>
+                        <li>✦ <strong>Hardstyle</strong> — When it gets wild</li>
+                        <li>✦ <strong>Gabber / Frenchcore</strong> — Maximum chaos</li>
+                        <li>✦ <strong>Open Format</strong> — Anything goes</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-dark-bg p-8 rounded-lg">
+                    <h3 class="text-2xl font-bold text-neon-red mb-4">MY APPROACH</h3>
+                    <p class="text-gray-300 leading-relaxed text-sm mb-4">
+                        I'm not here to play the same 128 BPM house loop for 2 hours. Give me freedom, and I'll take you on a journey. I'm highly versatile—I can adapt to any vibe, any crowd, any setting.
+                    </p>
+                    <p class="text-gray-400 text-xs italic">
+                        But fair warning: I don't take song requests well. I don't have every track ever made, and no, I can't play it from your phone. Trust the process.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="mt-12 bg-darker-bg border-l-4 border-neon-red p-8 rounded-lg max-w-4xl mx-auto">
+                <p class="text-2xl text-gray-200 italic mb-4 font-light">
+                    "I've never failed in getting people dancing."
+                </p>
+                <p class="text-sm text-gray-400">
+                    — That's not ego. That's experience. From a local venue in Sexbierum to ADE stages in Amsterdam, from intimate house parties to 300+ viewer Twitch streams. I know how to build a vibe, read a room, and deliver exactly what the moment needs. Sometimes that's melodic grooves. Sometimes that's relentless techno. Sometimes it's absolute chaos. But it always works.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- BOOKING SECTION -->
+    <section id="book" class="py-20 px-4">
+        <div class="section-divide mb-16"></div>
+        
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-4xl md:text-6xl font-black mb-6 tracking-tight">
+                BOOK ME
+            </h2>
+            <p class="text-gray-400 text-lg mb-8 max-w-3xl mx-auto leading-relaxed">
+                Available for clubs, festivals, private parties, office events, conference after-parties, underground raves, and basically anywhere people want good music and high energy. I've played everything from intimate house parties to ADE events to closing sets at tech conferences (yes, developers party hard).
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
+                <div class="bg-darker-bg p-6 rounded-lg text-left">
+                    <h3 class="text-lg font-bold text-neon-red mb-3">🎛️ GEAR</h3>
+                    <p class="text-gray-300 text-sm">
+                        I bring my own <strong>Traktor controller</strong>, or I can work with your CDJ/mixer setup. Always have a <strong>USB stick</strong> on me for impromptu sets. Professional, reliable, no drama.
+                    </p>
+                </div>
+                
+                <div class="bg-darker-bg p-6 rounded-lg text-left">
+                    <h3 class="text-lg font-bold text-neon-red mb-3">📍 LOCATION</h3>
+                    <p class="text-gray-300 text-sm">
+                        Based in <strong>Amsterdam</strong>, but happy to travel anywhere in the Netherlands or beyond. Train, car, plane—I'll get there. Let's make it happen.
+                    </p>
+                </div>
+                
+                <div class="bg-darker-bg p-6 rounded-lg text-left">
+                    <h3 class="text-lg font-bold text-neon-red mb-3">🎵 SET LENGTH</h3>
+                    <p class="text-gray-300 text-sm">
+                        Flexible with set length—1 hour warm-up, 2-3 hour peak time, all-night marathon. Tell me the vibe, tell me the time slot, and I'll deliver.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="bg-darker-bg p-8 rounded-lg inline-block">
+                <p class="text-sm text-gray-400 mb-2">EMAIL FOR BOOKINGS</p>
+                <a href="mailto:dj@itsrene.nl" 
+                   class="text-3xl font-bold text-neon-red hover:underline">
+                    dj@itsrene.nl
+                </a>
+            </div>
+            
+            <div class="mt-12">
+                <p class="text-gray-500 text-sm mb-4">
+                    Note: I'm not great with song requests—I don't have every track. 
+                    <br>And no, I can't play it from your phone. 😉
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SOCIAL LINKS -->
+    <section class="py-12 px-4 bg-darker-bg">
+        <div class="max-w-4xl mx-auto">
+            <div class="flex flex-wrap justify-center gap-6">
+                <a href="https://www.twitch.tv/itsrene_nl" target="_blank" 
+                   class="flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg font-semibold transition-all hover-glow">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/>
+                    </svg>
+                    Twitch
+                </a>
+                
+                <a href="https://soundcloud.com/itsrene_nl" target="_blank" 
+                   class="flex items-center gap-2 px-6 py-3 bg-orange-600 hover:bg-orange-700 rounded-lg font-semibold transition-all hover-glow">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M1.175 12.225c-.051 0-.094.046-.101.1l-.233 2.154.233 2.105c.007.058.05.098.101.098.05 0 .09-.04.099-.098l.255-2.105-.27-2.154c0-.057-.045-.1-.09-.1m-.899.828c-.051 0-.09.04-.099.098l-.255 2.105.27 2.154c0 .057.045.1.09.1.05 0 .09-.04.099-.098l.254-2.105-.254-2.154c-.009-.057-.05-.1-.1-.1m1.798-.899c-.06 0-.11.051-.117.111l-.209 2.176.209 2.076c.008.06.057.11.117.11.06 0 .108-.05.116-.11l.235-2.076-.235-2.176c-.008-.06-.056-.11-.116-.11m.899.06c-.06 0-.111.05-.119.11l-.189 2.116.189 2.075c.008.06.059.11.119.11.06 0 .111-.05.119-.11l.209-2.075-.209-2.116c-.008-.06-.059-.11-.119-.11m.899-.06c-.068 0-.118.058-.125.118l-.17 2.176.17 2.076c.007.059.057.117.125.117.067 0 .117-.058.125-.117l.189-2.076-.189-2.176c-.008-.06-.058-.118-.125-.118m.899.06c-.068 0-.118.058-.126.118l-.151 2.116.151 2.075c.008.06.058.118.126.118.067 0 .117-.058.124-.118l.171-2.075-.171-2.116c-.007-.06-.057-.118-.124-.118m.899-.06c-.075 0-.132.06-.139.118l-.132 2.176.132 2.076c.007.059.064.117.139.117.074 0 .131-.058.139-.117l.151-2.076-.151-2.176c-.008-.059-.065-.118-.139-.118m.899.06c-.074 0-.131.058-.139.117l-.113 2.117.113 2.075c.008.059.065.117.139.117.075 0 .132-.058.14-.117l.13-2.075-.13-2.117c-.008-.059-.065-.117-.14-.117m.899-.059c-.082 0-.145.063-.153.121l-.094 2.176.094 2.076c.008.059.071.121.153.121.081 0 .145-.062.152-.121l.114-2.076-.114-2.176c-.007-.058-.071-.121-.152-.121m.899.059c-.082 0-.145.063-.153.121l-.075 2.117.075 2.075c.008.059.071.121.153.121.081 0 .145-.062.152-.121l.095-2.075-.095-2.117c-.007-.058-.071-.121-.152-.121m.899-.059c-.09 0-.153.066-.161.125l-.057 2.176.057 2.076c.008.06.071.125.161.125.089 0 .152-.065.16-.125l.076-2.076-.076-2.176c-.008-.059-.071-.125-.16-.125m.899.059c-.09 0-.153.066-.161.125l-.038 2.117.038 2.075c.008.06.071.125.161.125.089 0 .152-.065.161-.125l.056-2.075-.056-2.117c-.009-.059-.072-.125-.161-.125m.9-.059c-.1 0-.162.07-.171.129l-.019 2.176.019 2.076c.009.059.071.129.171.129.098 0 .161-.07.169-.129l.037-2.076-.037-2.176c-.008-.059-.071-.129-.169-.129m.899.059c-.1 0-.162.07-.17.129l-.001 2.117.001 2.075c.008.059.07.129.17.129.098 0 .162-.07.169-.129l.019-2.075-.019-2.117c-.007-.059-.071-.129-.169-.129"/>
+                    </svg>
+                    SoundCloud
+                </a>
+                
+                <a href="https://www.instagram.com/itsrene_nl/" target="_blank" 
+                   class="flex items-center gap-2 px-6 py-3 bg-pink-600 hover:bg-pink-700 rounded-lg font-semibold transition-all hover-glow">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                    </svg>
+                    Instagram
+                </a>
+                
+                <a href="https://ko-fi.com/itsrene_nl" target="_blank" 
+                   class="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition-all hover-glow">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604 0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734 4.352.24 7.422-2.831 6.649-6.916zm-11.062 3.511c-1.246 1.453-4.011 3.976-4.011 3.976s-.121.119-.31.023c-.076-.057-.108-.09-.108-.09-.443-.441-3.368-3.049-4.034-3.954-.709-.965-1.041-2.7-.091-3.71.951-1.01 3.005-1.086 4.363.407 0 0 1.565-1.782 3.468-.963 1.904.82 1.832 3.011.723 4.311zm6.173.478c-.928.116-1.682.028-1.682.028V7.284h1.77s1.971.551 1.971 2.638c0 1.913-.985 2.667-2.059 3.015z"/>
+                    </svg>
+                    Buy Me a Coffee
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="py-8 px-4 text-center text-gray-500 text-sm">
+        <p class="mb-2">IT'S RENÉ © 2025</p>
+        <p>Amsterdam • Available Worldwide</p>
+        <p class="mt-4 text-xs text-gray-600">
+            Built with zero bullshit. Just pure energy.
+        </p>
+    </footer>
+
+    <!-- Smooth Scroll -->
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Cursor glow effect
+        const cursorGlow = document.getElementById('cursorGlow');
+        let mouseX = 0;
+        let mouseY = 0;
+        let glowX = 0;
+        let glowY = 0;
+        
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+        
+        function animateGlow() {
+            glowX += (mouseX - glowX) * 0.1;
+            glowY += (mouseY - glowY) * 0.1;
+            
+            cursorGlow.style.left = glowX - 150 + 'px';
+            cursorGlow.style.top = glowY - 150 + 'px';
+            
+            requestAnimationFrame(animateGlow);
+        }
+        
+        animateGlow();
+    </script>
+
+</body>
+</html>

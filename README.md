@@ -1,18 +1,30 @@
+# IT'S RENÉ - DJ Portfolio
 
-<img src="banner.png" alt="banner" width="600"/>
+Amsterdam-based DJ specializing in hard techno to melodic house. From mainstream to underground.
 
-<img src="images/gotoams_2024.jpg" alt="profile picture" width="600"/>
+**Live Site:** [itsrene.dj](https://itsrene.dj)
 
-At some point in the future this site will be updated.
+## About
 
+Professional DJ portfolio site featuring:
+- Live DJ sets and recordings
+- Twitch streaming info (Team Brisk & Birdcage Radio)
+- Booking information
+- Action shots from events
 
-Check out for now:
-[Twitch](https://www.twitch.tv/itsrene_nl) | 
-[Soundcloud](https://soundcloud.com/itsrene_nl) | 
-[Instagram](https://www.instagram.com/itsrene_nl/) | 
-[Buy me a coffee](https://ko-fi.com/itsrene_nl) 
+## Tech Stack
 
+- Pure HTML5 + Tailwind CSS
+- Vanilla JavaScript
+- Zero dependencies
+- Fully responsive design
 
+## Contact
 
-For all enquiries, please [e-mail](mailto:rene@itsrene.nl) me
+**Bookings:** [dj@itsrene.nl](mailto:dj@itsrene.nl)
 
+**Socials:**
+- [Twitch](https://www.twitch.tv/itsrene_nl)
+- [SoundCloud](https://soundcloud.com/itsrene_nl)
+- [Instagram](https://www.instagram.com/itsrene_nl/)
+- [Ko-fi](https://ko-fi.com/itsrene_nl)
