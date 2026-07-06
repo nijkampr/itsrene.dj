@@ -10,11 +10,11 @@ Rule of thumb for a dull moment: got 30 minutes? Take the next S. Got an evening
 
 | ID | Size | Ticket |
 |---|---|---|
-| ITR-001 | S | **Fix FAQ JSON-LD** — add missing `}` before `]` (~line 233). Validate all 5 blocks parse (`node -e` one-liner). Run Rich Results Test. |
-| ITR-002 | S | **Delete dead weight** — remove unreferenced `images/53799373426_94907c72b4_o.jpg` (11MB); check `gotoams_2024.jpg` usage; archive originals outside the repo first. |
-| ITR-003 | M | **Image emergency pass** — `scripts/optimize-images.sh` (ADR-0003) over headshot + 4 action shots; swap in derivatives; add `loading="lazy"` + `width`/`height`. Page goes ~40MB → ~2MB. |
-| ITR-004 | S | **Copy triage** — fix his/me person switch, unify 270 vs 300 viewers, drop footer year, remove "LATEST … most recent banger" staleness, drop `twitter:creator`. |
-| ITR-005 | S | **SoundCloud profile hygiene** (off-repo, phone-friendly) — bio + city on the SC profile (currently empty), link back to itsrene.dj. |
+| ITR-001 | S | ✅ 2026-07-06 **Fix FAQ JSON-LD** — missing `}` added; all 4 blocks parse. Follow-up for René: run [Rich Results Test](https://search.google.com/test/rich-results) on the live URL. |
+| ITR-002 | S | ✅ 2026-07-06 **Delete dead weight** — both unreferenced images removed; originals archived at `~/stuff/itsrene.dj-originals/`. |
+| ITR-003 | M | ✅ 2026-07-06 **Image emergency pass** — `scripts/optimize-images.sh` created + run; images/ 48MB → 1.0MB; lazy-loading + dimensions on all `<img>`. |
+| ITR-004 | S | ✅ 2026-07-06 **Copy triage** — person switch fixed, viewers unified at 270+, footer year dropped, stale LATEST framing removed, `twitter:creator` removed. |
+| ITR-005 | S | **SoundCloud profile hygiene** (off-repo, phone-friendly, needs René's login) — bio + city on the SC profile (currently empty), link back to itsrene.dj. |
 
 **Exit:** PageSpeed mobile re-run; expect the single biggest jump of the whole program.
 
