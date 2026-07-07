@@ -1,17 +1,96 @@
 {
-  "note": "IRL + stream gig history. Add a gig = add an object. date null = undated highlight. Rendered newest-first; see PRD-05.",
-  "gigs": [
-    { "date": "2024-06", "name": "GoTo Amsterdam — conference closing party", "city": "Amsterdam", "type": "irl", "label": "Conference party" },
-    { "date": null, "name": "Amsterdam Dance Event stages", "city": "Amsterdam", "type": "irl", "label": "ADE" },
-    { "date": null, "name": "BB Summer Party", "city": "Amsterdam", "type": "irl", "label": "Company party" },
-    { "date": null, "name": "House parties & office events", "city": "NL", "type": "irl", "label": "Private" },
-    { "date": "2023-02", "name": "Flek C's 40-hour Funked-up & Filthy 40th", "city": "Twitch", "type": "stream", "label": "Community marathon" },
-    { "date": "2023-02", "name": "Brisk's Big 51st Birthday Bash", "city": "Twitch", "type": "stream", "label": "Community marathon" },
-    { "date": "2023-01", "name": "BwoB presents: Mates and Crates (2 sets)", "city": "Twitch", "type": "stream", "label": "Crew event" },
-    { "date": "2022-11", "name": "ArtBeats", "city": "Twitch", "type": "stream", "label": "Guest slot" },
-    { "date": "2022-11", "name": "Twitch DJs Techno Raid Train", "city": "Twitch", "type": "stream", "label": "Raid train" },
-    { "date": "2022-03", "name": "TeknoStorm vol. 1 & The Aphotic Zone — live on KonceptK", "city": "Twitch", "type": "stream", "label": "Guest slot" },
-    { "date": "2022-03", "name": "DJ Brisk's 50th Birthday stream", "city": "Twitch", "type": "stream", "label": "Community marathon" },
-    { "date": "2021-09", "name": "VFest — (Dark) Techno set", "city": "Twitch", "type": "stream", "label": "Stream festival" }
-  ]
+ "note": "IRL + stream gig history — HAND-MAINTAINED (the sync can't see IRL gigs). Add a gig = add an object here. date null = undated highlight, rendered after dated entries. See PRD-05.",
+ "gigs": [
+  {
+   "date": "2025-12-11",
+   "name": "Backbase Christmas Party",
+   "city": "Amsterdam",
+   "type": "irl",
+   "label": "Company party"
+  },
+  {
+   "date": "2024-06",
+   "name": "GoTo Amsterdam — conference closing party",
+   "city": "Amsterdam",
+   "type": "irl",
+   "label": "Conference party"
+  },
+  {
+   "date": "2023-02",
+   "name": "Flek C's 40-hour Funked-up & Filthy 40th",
+   "city": "Twitch",
+   "type": "stream",
+   "label": "Community marathon"
+  },
+  {
+   "date": "2023-02",
+   "name": "Brisk's Big 51st Birthday Bash",
+   "city": "Twitch",
+   "type": "stream",
+   "label": "Community marathon"
+  },
+  {
+   "date": "2023-01",
+   "name": "BwoB presents: Mates and Crates (2 sets)",
+   "city": "Twitch",
+   "type": "stream",
+   "label": "Crew event"
+  },
+  {
+   "date": "2022-11",
+   "name": "ArtBeats",
+   "city": "Twitch",
+   "type": "stream",
+   "label": "Guest slot"
+  },
+  {
+   "date": "2022-11",
+   "name": "Twitch DJs Techno Raid Train",
+   "city": "Twitch",
+   "type": "stream",
+   "label": "Raid train"
+  },
+  {
+   "date": "2022-03",
+   "name": "TeknoStorm vol. 1 & The Aphotic Zone — live on KonceptK",
+   "city": "Twitch",
+   "type": "stream",
+   "label": "Guest slot"
+  },
+  {
+   "date": "2022-03",
+   "name": "DJ Brisk's 50th Birthday stream",
+   "city": "Twitch",
+   "type": "stream",
+   "label": "Community marathon"
+  },
+  {
+   "date": "2021-09",
+   "name": "VFest — (Dark) Techno set",
+   "city": "Twitch",
+   "type": "stream",
+   "label": "Stream festival"
+  },
+  {
+   "date": null,
+   "name": "Amsterdam Dance Event stages",
+   "city": "Amsterdam",
+   "type": "irl",
+   "label": "ADE"
+  },
+  {
+   "date": null,
+   "name": "Backbase Summer Party",
+   "city": "Amsterdam",
+   "type": "irl",
+   "label": "Company party"
+  },
+  {
+   "date": null,
+   "name": "House parties & office events",
+   "city": "NL",
+   "type": "irl",
+   "label": "Private"
+  }
+ ]
 }
