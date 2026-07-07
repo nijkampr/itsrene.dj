@@ -1,0 +1,93 @@
+name: checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: HTML, JSON-LD & budgets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: JSON-LD blocks must parse
+        run: |
+          python3 - <<'EOF'
+          import re, json, sys
+          fails = []
+          for page in ["index.html", "press/index.html"]:
+              html = open(page).read()
+              blocks = re.findall(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)
+              for i, b in enumerate(blocks, 1):
+                  try:
+                      json.loads(b)
+                  except json.JSONDecodeError as e:
+                      fails.append(f"{page} block {i}: {e}")
+              print(f"{page}: {len(blocks)} JSON-LD blocks")
+          if fails:
+              print("\n".join(fails)); sys.exit(1)
+          print("all JSON-LD valid")
+          EOF
+
+      - name: Image budget (250KB per file, 5MB total)
+        run: |
+          fail=0; total=0
+          while IFS= read -r -d '' f; do
+            size=$(stat -c%s "$f")
+            total=$((total + size))
+            if [ "$size" -gt 256000 ]; then echo "OVER BUDGET: $f ($size bytes)"; fail=1; fi
+          done < <(find images -type f -print0)
+          echo "images/ total: $total bytes"
+          [ "$total" -gt 5242880 ] && { echo "images/ exceeds 5MB total"; fail=1; }
+          exit $fail
+
+      - name: Referenced assets exist
+        run: |
+          python3 - <<'EOF'
+          import re, os, sys
+          missing = []
+          for page, base in [("index.html", "."), ("press/index.html", ".")]:
+              html = open(page).read()
+              for ref in set(re.findall(r'(?:src|href)="(/[^"]+)"', html)):
+                  path = ref.lstrip("/").split("#")[0].split("?")[0]
+                  if path and not path.startswith(("http", "mailto")):
+                      target = path if not path.endswith("/") else path + "index.html"
+                      if not os.path.exists(target):
+                          missing.append(f"{page} -> {ref}")
+          if missing:
+              print("\n".join(missing)); sys.exit(1)
+          print("all referenced assets exist")
+          EOF
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: html-validate
+        run: |
+          cat > .htmlvalidate.json <<'EOF'
+          {
+            "extends": ["html-validate:recommended"],
+            "rules": {
+              "no-trailing-whitespace": "off",
+              "long-title": "off",
+              "no-inline-style": "off"
+            }
+          }
+          EOF
+          npx --yes html-validate@8 index.html press/index.html
+
+  lighthouse:
+    name: Lighthouse (warn-only for now)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: .lighthouserc.json
+          uploadArtifacts: true
