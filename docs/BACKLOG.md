@@ -18,7 +18,13 @@ Rule of thumb for a dull moment: got 30 minutes? Take the next S. Got an evening
 
 **Exit:** PageSpeed mobile re-run; expect the single biggest jump of the whole program.
 
-## Block 1 · Foundation *(PRD-01 starts; ~2 evenings)*
+> **2026-07-07 — Blocks 1–6 shipped in one overnight run.** Deviations from the tickets, all deliberate:
+> ITR-053 (quotes) still needs humans; GoatCounter (ITR-062) skipped — needs René to create the account, code is a 5-minute add;
+> press bundle ships as a zip in `press/` instead of a GitHub Release (no `gh` auth on the build machine);
+> Lighthouse CI runs warn-only until first green runs are observed, then flip to required.
+> Tickets below kept for reference; ✅ = done in the run.
+
+## Block 1 · Foundation *(PRD-01 starts; ~2 evenings)* ✅
 
 | ID | Size | Ticket |
 |---|---|---|
@@ -27,7 +33,7 @@ Rule of thumb for a dull moment: got 30 minutes? Take the next S. Got an evening
 | ITR-012 | L | **De-Tailwind the markup** — rewrite `index.html` classes onto the new stylesheet, section by section; delete the CDN script and the old `<style>` block. Kill list from PRD-01 executed here. |
 | ITR-013 | S | **Reduced-motion + focus audit** — every animation guarded; focus ring = 2px `--itr`. |
 
-## Block 2 · The poster hero *(~1 evening)*
+## Block 2 · The poster hero *(~1 evening)* ✅
 
 | ID | Size | Ticket |
 |---|---|---|
@@ -35,7 +41,7 @@ Rule of thumb for a dull moment: got 30 minutes? Take the next S. Got an evening
 | ITR-021 | S | **Duotone treatment** — CSS filter recipe (or baked variants via the image script) + hover color reveal; applied to headshot now, photo wall later. |
 | ITR-022 | M | **Energy ramp v1** — scroll-driven 2px line + BPM section markers; rAF, reduced-motion guarded, hidden < 768px. |
 
-## Block 3 · Listen hub *(PRD-02; ~2 evenings)*
+## Block 3 · Listen hub *(PRD-02; ~2 evenings)* ✅
 
 | ID | Size | Ticket |
 |---|---|---|
@@ -43,7 +49,7 @@ Rule of thumb for a dull moment: got 30 minutes? Take the next S. Got an evening
 | ITR-031 | M | **Set list renderer** — fetch + table rows, newest first, computed "latest", `<noscript>` fallback. |
 | ITR-032 | M | **Embed facade + vibe filter** — click-to-mount SC iframe (one at a time, `#4DD6FF` color param); ALL/MELODIC/TECHNO/HARD/CHAOS filter row. |
 
-## Block 4 · Live + Played *(PRD-03 + PRD-05; ~2 evenings)*
+## Block 4 · Live + Played *(PRD-03 + PRD-05; ~2 evenings)* ✅
 
 | ID | Size | Ticket |
 |---|---|---|
@@ -52,7 +58,7 @@ Rule of thumb for a dull moment: got 30 minutes? Take the next S. Got an evening
 | ITR-042 | S | **Seed `data/gigs.json`** — brain-dump ≥ 12 gigs (ADE, GoToAms 2024, BB Summer, KonceptK, BwoB, ArtBeats, VFest, marathons…). Phone-friendly ticket. |
 | ITR-043 | M | **PLAYED timeline + photo wall** — timetable rows from JSON; duotone wall with real alt texts; Sexbierum origin line. |
 
-## Block 5 · Press kit *(PRD-04; ~2 evenings, half of it writing)*
+## Block 5 · Press kit *(PRD-04; ~2 evenings, half of it writing)* ✅ (except ITR-053: quotes need humans)
 
 | ID | Size | Ticket |
 |---|---|---|
@@ -61,7 +67,7 @@ Rule of thumb for a dull moment: got 30 minutes? Take the next S. Got an evening
 | ITR-052 | S | **Press bundle** — zip via GitHub Release; link from /press + BOOK section. |
 | ITR-053 | S | **Ask for quotes** — message GoToAms/BB/Birdcage contacts for one-line testimonials (humans, not code; slot in when they land). |
 
-## Block 6 · Automation & gates *(PRD-06; ~2 evenings, the engineering showcase)*
+## Block 6 · Automation & gates *(PRD-06; ~2 evenings, the engineering showcase)* ✅ (except ITR-062 GoatCounter: needs René's account)
 
 | ID | Size | Ticket |
 |---|---|---|

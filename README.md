@@ -1,30 +1,28 @@
-# IT'S RENÉ - DJ Portfolio
+# itsrene.dj
 
-Amsterdam-based DJ specializing in hard techno to melodic house. From mainstream to underground.
+DJ portfolio for **IT'S RENÉ** — Amsterdam, from mainstream to underground.
 
-**Live Site:** [itsrene.dj](https://itsrene.dj)
+**Live:** [itsrene.dj](https://www.itsrene.dj) · **Press kit:** [/press](https://www.itsrene.dj/press/) · **Bookings:** dj@itsrene.nl
 
-## About
+## How this site works
 
-Professional DJ portfolio site featuring:
-- Live DJ sets and recordings
-- Twitch streaming info (Team Brisk & Birdcage Radio)
-- Booking information
-- Action shots from events
+Hand-built static page on GitHub Pages. No framework, no build step, no cookies — what's in the repo is what ships. The interesting parts:
 
-## Tech Stack
+- **Content is data.** Sets and gigs live in `data/*.json`, rendered by ~180 lines of vanilla JS. A [weekly GitHub Action](.github/workflows/sync-sets.yml) syncs the set list from SoundCloud's RSS feed and follower stats from Twitch — curated fields (vibe tags, featured flags) always win over feed data, so nothing a human wrote gets clobbered and nothing on the page can go stale.
+- **The design is "The Build":** the page is staged like a DJ set — opens melodic and spacious, tightens and hardens section by section, peaks at the booking CTA. One accent color (`#4DD6FF`, from the logo), hairline structure, duotone photography, ≤20KB of hand-written CSS. Full spec: [docs/design/DESIGN-DIRECTION.md](docs/design/DESIGN-DIRECTION.md).
+- **CI keeps it honest.** Every push validates JSON-LD, HTML, image budgets and asset references; Lighthouse runs on top ([checks.yml](.github/workflows/checks.yml)).
+- **Live status without a backend:** one client-side call to decapi with a 3s timeout; offline is the designed default state, so the feature can only ever add.
 
-- Pure HTML5 + Tailwind CSS
-- Vanilla JavaScript
-- Zero dependencies
-- Fully responsive design
+## Docs
 
-## Contact
+The whole redesign was run as a documented program — brief, ADRs, PRDs, backlog: **[docs/](docs/)**. Start at [docs/BRIEF.md](docs/BRIEF.md).
 
-**Bookings:** [dj@itsrene.nl](mailto:dj@itsrene.nl)
+## Working on it
 
-**Socials:**
-- [Twitch](https://www.twitch.tv/itsrene_nl)
-- [SoundCloud](https://soundcloud.com/itsrene_nl)
-- [Instagram](https://www.instagram.com/itsrene_nl/)
-- [Ko-fi](https://ko-fi.com/itsrene_nl)
+```bash
+python3 -m http.server 8000        # serve locally
+python3 scripts/sync_sets.py       # refresh data from SoundCloud/Twitch
+./scripts/optimize-images.sh       # regenerate image derivatives (originals live off-repo)
+```
+
+Pick up work from [docs/BACKLOG.md](docs/BACKLOG.md) — tickets are sized for dull moments.

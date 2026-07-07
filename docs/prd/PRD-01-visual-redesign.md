@@ -20,7 +20,7 @@ Content sections' *data* behavior (PRD-02/03/05), press kit (PRD-04), copy rewri
 ## Acceptance
 
 - Zero external CSS/JS requests except GoatCounter (once ADR-0006 lands) and click-mounted SoundCloud embeds.
-- `style.css` ≤ 20KB; no `!important`; tokens only — no raw hex outside `:root`.
+- `style.css` ≤ 20KB; no `!important` (sole exception: the `prefers-reduced-motion` kill switch); tokens only — no raw hex outside `:root`.
 - Anti-Slop Contract audit passes (checklist in design doc, run manually pre-merge).
 - Lighthouse A11y ≥ 95; AA contrast on all text; keyboard-only walkthrough works.
 - The squint test: at 25% zoom the page reads as a poster with a visible density ramp.
