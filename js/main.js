@@ -1,4 +1,4 @@
-/* IT'S RENÉ — all client behavior. Progressive enhancement only:
+/* IT'S RENÉ · all client behavior. Progressive enhancement only:
    every feature here has a designed fallback state in the HTML. */
 (function () {
   "use strict";
@@ -68,7 +68,7 @@
         row.innerHTML =
           '<span class="mono">' + set.date + "</span>" +
           '<span class="title">' + escapeHtml(set.title) + "</span>" +
-          '<span class="tag' + (hot ? " tag-hot" : "") + '">' + (set.vibe || "—") + "</span>" +
+          '<span class="tag' + (hot ? " tag-hot" : "") + '">' + (set.vibe || "·") + "</span>" +
           '<span class="play-ico" aria-hidden="true">▶</span>';
         row.addEventListener("click", function () { togglePlayer(row, set); });
         frag.appendChild(row);
@@ -135,7 +135,7 @@
         var row = document.createElement("div");
         row.className = "gig-row" + (gig.type === "irl" ? " is-irl" : "");
         row.innerHTML =
-          '<span class="mono">' + (gig.date || "—") + "</span>" +
+          '<span class="mono">' + (gig.date || "·") + "</span>" +
           '<span class="name">' + escapeHtml(gig.name) + "</span>" +
           '<span class="tag">' + escapeHtml(gig.label) + "</span>";
         frag.appendChild(row);
@@ -162,6 +162,6 @@
           if (twitchCta) twitchCta.textContent = "Watching now →";
         }
       })
-      .catch(function () { /* offline state stays — by design */ });
+      .catch(function () { /* offline state stays, by design */ });
   }
 })();

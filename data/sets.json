@@ -1,5 +1,5 @@
 {
- "source": "soundcloud rss, curated by hand — sync keeps this fresh (see ADR-0004)",
+ "source": "soundcloud rss, curated by hand; sync keeps this fresh (see ADR-0004)",
  "sets": [
   {
    "date": "2025-08-17",
