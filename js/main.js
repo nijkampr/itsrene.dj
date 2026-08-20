@@ -32,7 +32,6 @@
     var fmt = {
       twitchFollowers: function (v) { return v.toLocaleString("en-US"); },
       hoursStreamed: function (v) { return v + "+"; },
-      peakViewers: function (v) { return v + "+"; },
       sets: function (v) { return String(v); },
       yearsStreaming: function () {
         return String(new Date().getFullYear() - s.streamingSince);
