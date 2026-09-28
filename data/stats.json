@@ -1,8 +1,8 @@
 {
  "note": "Public numbers, refreshed by .github/workflows/sync-sets.yml (see ADR-0004/0006). Suffix formatting happens in JS.",
- "twitchFollowers": 1530,
+ "twitchFollowers": 1529,
  "hoursStreamed": 500,
  "sets": 32,
  "streamingSince": 2020,
- "updated": "2026-09-21"
+ "updated": "2026-09-28"
 }
