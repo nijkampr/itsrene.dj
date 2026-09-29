@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT'S RENÉ · Trailer</title>
+<meta name="robots" content="noindex">
+<style>
+  :root { --ink: #0A0B0D; --line: #23262B; --paper: #F2F3F5; --muted: #8A9099; --itr: #4DD6FF; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #000; color: var(--paper); }
+  body { display: grid; place-items: center; font: 12px/1.4 "JetBrains Mono", ui-monospace, monospace; }
+  canvas { width: min(100vw, calc(100vh * 16 / 9 - 60px)); aspect-ratio: 16 / 9; display: block; background: var(--ink); }
+  .bar { display: flex; gap: 12px; align-items: center; width: min(100vw, calc(100vh * 16 / 9 - 60px)); padding: 10px 0; }
+  .bar button { font: inherit; color: var(--paper); background: none; border: 1px solid var(--line); padding: 6px 12px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.1em; }
+  .bar input { flex: 1; accent-color: var(--itr); }
+  .bar span { color: var(--muted); min-width: 60px; font-variant-numeric: tabular-nums; }
+  body.capture .bar { display: none; }
+  body.capture canvas { width: 1920px; }
+</style>
+</head>
+<body>
+<canvas id="c" width="1920" height="1080"></canvas>
+<div class="bar"><button id="play" type="button">Play</button><input id="scrub" type="range" min="0" max="59" step="0.001" value="0" aria-label="Scrub"><span id="tc">0.00</span></div>
+<audio id="aud" src="build/soundtrack.wav" preload="auto"></audio>
+<script>
+/* ============================================================
+   IT'S RENÉ · trailer renderer. 59 s, 1920×1080.
+   render(t) is a pure function of time: capture.mjs steps it frame
+   by frame, the preview below drives it from the audio clock.
+   The beat grid comes from timeline.json (soundtrack.py wrote it),
+   so every cut lands on a kick.
+   ============================================================ */
+(() => {
+const W = 1920, H = 1080, M = 160;
+const K = { ink: "#0A0B0D", ink2: "#121417", line: "#23262B", paper: "#F2F3F5", muted: "#8A9099", itr: "#4DD6FF", deep: "#1E7FA6" };
+const cv = document.getElementById("c");
+const x = cv.getContext("2d");
+let TL, STATS, GIGS, SEC = {};
+const IMG = {}, GRAIN = [];
+
+// ---------- math ----------
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const lin = (t, a, b) => clamp((t - a) / (b - a));
+const eo = p => 1 - Math.pow(1 - p, 3);
+const eo5 = p => 1 - Math.pow(1 - p, 5);
+const ei = p => p * p * p;
+const eio = p => p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+const hash = n => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
+
+// ---------- type ----------
+const FAM = { d: "Archivo", m: '"JetBrains Mono"', t: "Inter" };
+const TRACK = { d: -0.02, m: 0.08, t: 0 };
+function font(o) {
+  const f = o.f || "d", size = o.size || 100;
+  x.font = `${o.weight || (f === "d" ? 900 : 400)} ${size}px ${FAM[f]}`;
+  x.fontStretch = f === "d" ? (o.stretch || "expanded") : "normal";
+  x.letterSpacing = ((o.track ?? TRACK[f]) * size).toFixed(2) + "px";
+}
+function mw(s, o) { font(o); return x.measureText(s).width - (o.track ?? TRACK[o.f || "d"]) * (o.size || 100); }
+function fit(s, maxW, o, cap = 999) { const w = mw(s, { ...o, size: 100 }); return Math.min(cap, 100 * maxW / w); }
+// runs: [[text, color], ...] drawn as one line; align applies to the whole line
+function txt(runs, X, Y, o = {}) {
+  if (typeof runs === "string") runs = [[runs, o.color || K.paper]];
+  const total = runs.reduce((a, r) => a + mw(r[0], o), 0);
+  let cx = o.align === "center" ? X - total / 2 : o.align === "right" ? X - total : X;
+  font(o);
+  x.textAlign = "left"; x.textBaseline = "alphabetic";
+  x.globalAlpha = o.alpha ?? 1;
+  for (const [s, c] of runs) { x.fillStyle = c; x.fillText(s, cx, Y); cx += mw(s, o); }
+  x.globalAlpha = 1;
+  return total;
+}
+// the poster reveal: type rises out of its own baseline
+function rise(runs, X, Y, o, p) {
+  if (p <= 0) return;
+  const s = o.size;
+  x.save();
+  x.beginPath(); x.rect(0, Y - s * 1.02, W, s * 1.24); x.clip();
+  txt(runs, X, Y + (1 - eo5(p)) * s * 1.15, o);
+  x.restore();
+}
+function typed(s, p) { return s.slice(0, Math.floor(s.length * clamp(p) + 1e-6)); }
+function hline(x0, x1, y, c = K.line, a = 1, w = 1) { x.globalAlpha = a; x.fillStyle = c; x.fillRect(x0, Math.round(y), x1 - x0, w); x.globalAlpha = 1; }
+function box(x0, y0, w, h, c = K.line, a = 1) { x.globalAlpha = a; x.strokeStyle = c; x.lineWidth = 1; x.strokeRect(Math.round(x0) + 0.5, Math.round(y0) + 0.5, w, h); x.globalAlpha = 1; }
+function fill(c, a = 1) { x.globalAlpha = a; x.fillStyle = c; x.fillRect(0, 0, W, H); x.globalAlpha = 1; }
+
+// ---------- photos: the site's duotone, baked once ----------
+const DUO = "grayscale(1) sepia(0.55) hue-rotate(155deg) saturate(2.4) brightness(0.92) contrast(1.08)";
+function duotone(img) {
+  const c = document.createElement("canvas"); c.width = img.naturalWidth; c.height = img.naturalHeight;
+  const g = c.getContext("2d"); g.filter = DUO; g.drawImage(img, 0, 0); return c;
+}
+function cover(img, X, Y, w, h, zoom = 1, fx = 0.5, fy = 0.5, dark = 0) {
+  const s = Math.max(w / img.width, h / img.height) * zoom;
+  const dw = img.width * s, dh = img.height * s;
+  x.save(); x.beginPath(); x.rect(X, Y, w, h); x.clip();
+  x.drawImage(img, X + (w - dw) * fx, Y + (h - dh) * fy, dw, dh);
+  if (dark) { x.globalAlpha = dark; x.fillStyle = K.ink; x.fillRect(X, Y, w, h); }
+  x.restore(); x.globalAlpha = 1;
+}
+
+// ---------- the clock ----------
+function secAt(t) { let s = TL.sections[0]; for (const q of TL.sections) if (t >= q.start) s = q; return s; }
+function beatAt(t) {
+  let lo = 0, hi = TL.beats.length - 1;
+  if (t < TL.beats[0].t) return { b: TL.beats[0], k: 0, f: 0 };
+  while (lo < hi) { const mid = (lo + hi + 1) >> 1; if (TL.beats[mid].t <= t) lo = mid; else hi = mid - 1; }
+  const b = TL.beats[lo], q = 60 / b.bpm;
+  return { b, k: lo, f: (t - b.t) / q, q };
+}
+function punch(t, kinds = ["techno", "hard", "final"], tau = 0.09) {
+  let last = -99;
+  for (const k of TL.kicks) { if (k.t > t) break; if (kinds.includes(k.kind)) last = k.t; }
+  return Math.exp(-(t - last) / tau);
+}
+// position in a section: beat index i, bar, beat-in-bar, time since that beat
+function loc(t, name) {
+  const s = SEC[name], q = 60 / s.bpm0, lt = t - s.start;
+  const i = Math.floor(lt / q + 1e-6);
+  return { lt, q, i, bar: Math.floor(i / 4), pos: i % 4, bt: lt - i * q, at: (bar, pos = 0) => s.start + (bar * 4 + pos) * q };
+}
+function setClock(t) {
+  // four hours of set, fifty-nine seconds of video
+  const map = { A: [0, 1], B: [1, 2], C: [2, 3], D: [3, 3.5], E: [3.5, 4], GAP: [4, 4], F: [4, 4.5], G: [4.5, 4.5] };
+  const s = secAt(t), [h0, h1] = map[s.name];
+  const h = h0 + (h1 - h0) * clamp((t - s.start) / (s.end - s.start));
+  const sec = Math.floor(h * 3600);
+  const pad = n => String(n).padStart(2, "0");
+  return `${pad(Math.floor(sec / 3600))}:${pad(Math.floor(sec / 60) % 60)}:${pad(sec % 60)}`;
+}
+
+// ---------- chrome: hairlines, brand, energy rail ----------
+function brand(X, Y, size, a = 1) {
+  txt([["IT'S REN", K.paper], ["É", K.itr]], X, Y, { size, track: 0.02, alpha: a });
+}
+function hud(t, o = {}) {
+  const a = o.a ?? 1;
+  if (a <= 0) return;
+  const s = secAt(t), bt = beatAt(t);
+  const draw = o.draw ?? 1;
+  hline(0, W * draw, 88, K.line, a); hline(W - W * draw, W, H - 88, K.line, a);
+  brand(M - 64, 58, 22, a * (o.brand ?? 1));
+  if (s.marker && (o.label ?? 1) > 0) {
+    txt([[`${s.marker} · ${s.label.toUpperCase()} · `, K.muted], [`${Math.round(bt.b.bpm)} BPM`, K.paper]], W - M + 64, 57, { f: "m", size: 15, align: "right", alpha: a * (o.label ?? 1) });
+  }
+  txt([["SET ", K.muted], [setClock(t), K.paper]], M - 64, H - 46, { f: "m", size: 15, alpha: a * (o.clock ?? 1) });
+  if (o.caption) txt(o.caption, W / 2, H - 46, { f: "m", size: 15, align: "center", color: K.muted, alpha: a });
+  txt("WWW.ITSRENE.DJ", W - M + 64, H - 46, { f: "m", size: 15, align: "right", color: K.muted, alpha: a });
+  // energy rail: the site's one allowed gradient
+  const ra = a * (o.rail ?? 1);
+  if (ra > 0) {
+    const prog = clamp(t / SEC.G.start);
+    x.globalAlpha = ra; x.fillStyle = K.line; x.fillRect(0, 0, 4, H);
+    const g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, K.deep); g.addColorStop(1, K.itr);
+    x.fillStyle = g; x.fillRect(0, 0, 4, H * prog);
+    for (const q of TL.sections) if (q.marker && q.name !== "E") {
+      const y = H * q.start / SEC.G.start;
+      x.fillStyle = t >= q.start ? K.itr : K.muted; x.fillRect(4, Math.round(y), 10, 1);
+      txt(String(q.bpm0), 20, y + 16, { f: "m", size: 12, color: t >= q.start ? K.paper : K.muted, alpha: ra });
+    }
+    x.globalAlpha = 1;
+  }
+}
+function grain(t, a = 0.075) {
+  const g = GRAIN[Math.floor(t * 30) % GRAIN.length];
+  x.save(); x.globalCompositeOperation = "screen"; x.globalAlpha = a;
+  x.drawImage(g, 0, 0, W, H); x.restore();
+}
+// the site's .badge: OFFLINE is the default, LIVE is a state change
+function badge(X, Y, live, a = 1) {
+  const w = 190, h = 44, c = live ? K.itr : K.muted;
+  box(X, Y, w, h, live ? K.itr : K.line, a);
+  x.globalAlpha = a; x.fillStyle = c; x.beginPath(); x.arc(X + 50, Y + h / 2, 4.5, 0, 7); x.fill(); x.globalAlpha = 1;
+  txt(live ? "LIVE" : "OFFLINE", X + 66, Y + 28, { f: "m", size: 15, weight: 700, track: 0.12, color: c, alpha: a });
+}
+function sectHead(title, meta, t0, t) {
+  rise(title, M, 290, { size: 150 }, lin(t, t0, t0 + 0.35));
+  txt(meta, W - M, 288, { f: "m", size: 17, align: "right", color: K.muted, alpha: lin(t, t0 + 0.1, t0 + 0.3) });
+  hline(M, M + (W - 2 * M) * eo(lin(t, t0, t0 + 0.5)), 322, K.line);
+}
+function vibeTag(v, X, Y, a = 1) {
+  const hot = v === "HARD" || v === "CHAOS", w = mw(v, { f: "m", size: 15, weight: 700, track: 0.1 }) + 28;
+  box(X - w, Y - 22, w, 32, hot ? K.itr : K.line, a);
+  txt(v, X - w + 14, Y, { f: "m", size: 15, weight: 700, track: 0.1, color: hot ? K.itr : K.muted, alpha: a });
+}
+
+// ============================================================ scenes
+// A · 00:00 · 120 BPM. It starts at the surface.
+function sceneA(t) {
+  fill(K.ink);
+  const L = loc(t, "A");
+  // coordinates, typed in the dark
+  if (t < 2) {
+    const s = "52.36°N 4.90°E", p = lin(t, 0.35, 1.3);
+    const w = txt(typed(s, p), W / 2 - mw(s, { f: "m", size: 26 }) / 2, 552, { f: "m", size: 26 });
+    const blink = Math.floor(t / 0.5) % 2 === 0;
+    if (blink) { x.fillStyle = K.itr; x.fillRect(W / 2 - mw(s, { f: "m", size: 26 }) / 2 + w + 6, 530, 14, 26); }
+    txt(typed("AMSTERDAM · LATE", lin(t, 1.2, 1.7)), W / 2, 600, { f: "m", size: 16, align: "center", color: K.muted });
+    return;
+  }
+  const size = Math.min(fit("IT STARTS", 1080, {}), fit("SURFACE.", 1080, {}), 170);
+  const ground = 740;
+  // portrait: the only face in the room, barely lit
+  const pa = lin(t, L.at(3), L.at(3) + 1.6);
+  if (pa > 0) {
+    const pw = 470, ph = 626, px = W - M - pw, py = ground - ph + 60;
+    cover(IMG.headshot, px, py, pw, ph, 1.12 - 0.05 * lin(t, L.at(3), 8), 0.5, 0.35, 1 - 0.58 * eo(pa));
+    box(px, py, pw, ph, K.line, pa);
+    txt("AMS · BEHIND THE DECKS SINCE 15, BACK SINCE COVID", px + pw, py + ph + 36, { f: "m", size: 14, align: "right", color: K.muted, alpha: pa });
+  }
+  hline(W / 2 - (W / 2) * eo(lin(t, 2, 2.7)), W / 2 + (W / 2) * eo(lin(t, 2, 2.7)), ground, K.paper, 0.35);
+  rise("IT STARTS", M, ground - 40 - size * 1.9, { size }, lin(t, L.at(1), L.at(1) + 0.45));
+  rise("AT THE", M, ground - 40 - size * 0.95, { size }, lin(t, L.at(2), L.at(2) + 0.45));
+  rise("SURFACE.", M, ground - 40, { size }, lin(t, L.at(2, 2), L.at(2, 2) + 0.45));
+  hud(t, { a: 1, draw: eo(lin(t, 2, 2.8)), brand: lin(t, 2.4, 2.9), label: lin(t, 3, 3.5), rail: lin(t, 3, 3.6), clock: lin(t, 2.6, 3.1),
+    caption: t > 6 ? "" : "" });
+}
+
+// B · 01:00 · 128 BPM. From mainstream, through the floor, to underground.
+function sceneB(t) {
+  const L = loc(t, "B");
+  const cam = t < L.at(2) ? -760 + 60 * lin(t, SEC.B.start, L.at(2))
+    : -700 + 880 * eio(lin(t, L.at(2), L.at(3))) + 30 * lin(t, L.at(3), SEC.B.end);
+  const Y = wy => wy - cam;
+  // above ground the room is a shade lighter; below, it isn't
+  fill(K.ink);
+  x.fillStyle = K.ink2; x.fillRect(0, 0, W, clamp(Y(0), 0, H));
+  const bs = Math.min(fit("MAINSTREAM", W - 2 * M, {}), fit("UNDERGROUND", W - 2 * M, {}), 250);
+  txt([["01:00 · 128 BPM · ", K.muted], ["LISTEN", K.paper]], M, Y(-560), { f: "m", size: 17 });
+  rise("FROM", M, Y(-330), { size: 110 }, lin(t, SEC.B.start, SEC.B.start + 0.4));
+  txt("PROGRESSIVE HOUSE WARM-UPS", W - M, Y(-345), { f: "m", size: 18, align: "right", color: K.muted, alpha: lin(t, L.at(0, 2), L.at(0, 3)) });
+  rise("MAINSTREAM", M, Y(-40), { size: bs }, lin(t, L.at(0, 1), L.at(0, 1) + 0.45));
+  // the ground line, with its Amsterdam datum
+  hline(0, W, Y(0), K.paper, 0.45);
+  txt("0.00 M NAP", W - M, Y(0) - 14, { f: "m", size: 13, align: "right", color: K.muted });
+  for (let d = 1; d <= 6; d++) {
+    const yy = Y(d * 160);
+    hline(W - 110, W - 90, yy, K.muted, 0.6);
+    txt(`−${(d * 1.6).toFixed(1)}`, W - 118, yy + 5, { f: "m", size: 12, align: "right", color: K.line });
+  }
+  // below
+  const u0 = 420;
+  txt("TO", M, Y(u0), { size: 110 });
+  txt("UNDERGROUND", M, Y(u0 + bs * 1.02), { size: bs });
+  txt([["TO FULL ", K.muted], ["GABBER CHAOS", K.itr], [". IN ONE SET.", K.muted]], W - M, Y(u0 - 15), { f: "m", size: 18, align: "right" });
+  const rows = [["2025-08-17", "LOADS OF TECHNO", "HARD"], ["2024-05-11", "MAINFRAME MAY EDITION", "TECHNO"], ["2024-01-20", "TECNOOOOO", "TECHNO"]];
+  const r0 = u0 + bs * 1.02 + 100;
+  rows.forEach((r, k) => {
+    const a = lin(t, L.at(3, k), L.at(3, k) + 0.2), yy = Y(r0 + k * 78);
+    if (a <= 0) return;
+    hline(M, W - M, yy - 50, K.line, a);
+    txt(r[0], M, yy, { f: "m", size: 16, color: K.muted, alpha: a });
+    txt(r[1], M + 220, yy + 2, { size: 38, weight: 800, stretch: "expanded", alpha: a });
+    vibeTag(r[2], W - M, yy - 2, a);
+  });
+  hud(t, { caption: "" });
+}
+
+// C · 02:00 · 140 BPM. Live: numbers are the decoration.
+function sceneC(t) {
+  fill(K.ink);
+  const L = loc(t, "C");
+  const live = t >= L.at(0, 2);
+  sectHead("LIVE", "02:00 · 140 BPM · TWITCH", SEC.C.start, t);
+  const yrs = Number(String(STATS.updated).slice(0, 4)) - STATS.streamingSince;
+  const stats = [
+    { n: STATS.hoursStreamed, suf: "+", label: "HOURS LIVE ON TWITCH", side: ["MELODIC WARM-UPS DRIFTING INTO TECHNO.", "IF CHAT EGGS ME ON, HARDSTYLE."] },
+    { n: STATS.twitchFollowers, suf: "", label: "TWITCH FOLLOWERS", side: ["NO FIXED SCHEDULE.", "FOLLOW FOR THE PING."] },
+    { n: yrs, suf: "", label: `YEARS STREAMING · SINCE ${STATS.streamingSince}`, side: ["BEHIND THE DECKS SINCE 15.", "BACK SINCE COVID."] },
+    { n: STATS.sets, suf: "", label: "RECORDED SETS", side: ["EVERY ONE SINCE 2021.", "THE LIST SYNCS ITSELF."] },
+  ];
+  const fmt = n => n.toLocaleString("en-US");
+  if (L.bar === 0) {
+    badge(M, 380, live, lin(t, SEC.C.start + 0.1, SEC.C.start + 0.3));
+    rise("USUALLY EVENINGS CET.", M, 580, { size: 84 }, lin(t, L.at(0, 1), L.at(0, 1) + 0.4));
+    txt("NO FIXED SCHEDULE. THE DAY JOB DOESN'T ALLOW FOR ONE.", M, 660, { f: "m", size: 20, color: K.muted, alpha: lin(t, L.at(0, 2), L.at(0, 2) + 0.15) });
+    txt("WHEN I GO LIVE, IT'S AN ACTUAL LIVE SET.", M, 700, { f: "m", size: 20, alpha: lin(t, L.at(0, 3), L.at(0, 3) + 0.15) });
+  } else if (L.bar <= 4) {
+    const k = L.bar - 1, s = stats[k], t0 = L.at(L.bar);
+    badge(W - M - 190, 360, true, 1);
+    const p = eo(lin(t, t0, t0 + L.q * 1.3));
+    const n = Math.round(s.n * p);
+    const w = txt(fmt(n), M - 12, 780, { size: 390 });
+    if (s.suf) txt(s.suf, M - 12 + w + 8, 780, { size: 390, color: K.itr, alpha: p > 0.98 ? 1 : 0 });
+    txt(s.label, M, 850, { f: "m", size: 22, alpha: lin(t, t0 + 0.1, t0 + 0.3) });
+    s.side.forEach((line, j) => txt(typed(line, lin(t, L.at(L.bar, 1 + j), L.at(L.bar, 1 + j) + 0.3)), W - M, 520 + j * 40, { f: "m", size: 19, align: "right", color: j ? K.paper : K.muted }));
+    // the stat row fills up as the set goes on
+    const cw = (W - 2 * M) / 4;
+    for (let j = 0; j < 4; j++) {
+      const on = j < k || (j === k && p > 0.98);
+      box(M + j * cw, 900, cw, 60, K.line, 1);
+      if (on) txt([[fmt(stats[j].n) + stats[j].suf + " ", j === k ? K.itr : K.paper], [stats[j].label.split(" · ")[0], K.muted]], M + j * cw + 18, 938, { f: "m", size: 14 });
+    }
+  } else {
+    const size = Math.min(fit("BIRDCAGE RADIO", W - 2 * M, {}), 150), t0 = L.at(5);
+    txt([["2 ", K.itr], ["CREWS", K.muted]], M, 410, { f: "m", size: 22, weight: 700, alpha: lin(t, t0, t0 + 0.1) });
+    rise("TEAM BRISK", M, 580, { size }, lin(t, t0, t0 + 0.35));
+    rise("BIRDCAGE RADIO", M, 580 + size * 1.0, { size }, lin(t, L.at(5, 1), L.at(5, 1) + 0.35));
+    txt("THE TWITCH DJ COLLECTIVES I STREAM WITH.", M, 580 + size + 90, { f: "m", size: 19, color: K.muted, alpha: lin(t, L.at(5, 2), L.at(5, 2) + 0.1) });
+    txt("RAID TRAINS · B2BS · BIRTHDAY MARATHONS", M, 580 + size + 130, { f: "m", size: 19, alpha: lin(t, L.at(5, 3), L.at(5, 3) + 0.1) });
+  }
+  hud(t);
+}
+
+// D · 03:00 · 150 BPM. Played: the rooms, then the list, then the origin story.
+function sceneD(t) {
+  fill(K.ink);
+  const L = loc(t, "D");
+  if (L.bar < 4) {
+    const shots = [
+      [IMG.goto, "2024-06", "GOTO AMSTERDAM", "CONFERENCE CLOSING PARTY · AMSTERDAM · IRL", 0.5, 0.35],
+      [IMG.ade, "ADE", "AMSTERDAM DANCE EVENT", "STAGES · AMSTERDAM · IRL", 0.5, 0.3],
+      [IMG.sax, "2024-06", "SAME NIGHT, LIVE SAX", "GOTO AMSTERDAM · IRL", 0.5, 0.35],
+      [IMG.bb, "AMS", "BACKBASE SUMMER PARTY", "COMPANY PARTY · AMSTERDAM · IRL", 0.5, 0.45],
+    ];
+    const [img, date, name, meta, fx, fy] = shots[L.bar], p = lin(t, L.at(L.bar), L.at(L.bar + 1));
+    const z = 1.04 + 0.08 * p + 0.025 * punch(t, ["techno"], 0.07);
+    cover(img, 0, 0, W, 760, z, fx, fy, 0.3);
+    x.fillStyle = K.ink; x.fillRect(0, 760, W, H - 760);
+    hline(0, W, 760, K.line);
+    txt(date, M, 830, { f: "m", size: 18, weight: 700, color: K.itr });
+    rise(name, M, 918, { size: 72 }, lin(t, L.at(L.bar), L.at(L.bar) + 0.3));
+    txt(meta, W - M, 830, { f: "m", size: 16, align: "right", color: K.muted });
+    txt(`03:00 · PLAYED · ${String(L.bar + 1).padStart(2, "0")}/04`, W - M, 918, { f: "m", size: 16, align: "right", color: K.muted });
+  } else if (L.bar === 4) {
+    sectHead("PLAYED", "03:00 · 150 BPM · 2021–NOW", L.at(4), t);
+    const rows = GIGS.filter(g => g.date).slice(0, 8);
+    rows.forEach((g, k) => {
+      const t0 = L.at(4) + k * L.q / 2, a = lin(t, t0, t0 + 0.08), yy = 400 + k * 70;
+      if (a <= 0) return;
+      hline(M, W - M, yy + 22, K.line, a);
+      txt(g.date, M, yy, { f: "m", size: 16, color: K.muted, alpha: a });
+      txt(g.name.toUpperCase(), M + 190, yy + 2, { size: 32, weight: 800, alpha: a });
+      txt([[g.city.toUpperCase() + " · ", K.muted], [g.type.toUpperCase(), g.type === "irl" ? K.paper : K.muted]], W - M, yy, { f: "m", size: 15, align: "right", alpha: a });
+    });
+  } else {
+    const t0 = L.at(5);
+    const size = Math.min(fit("SEXBIERUM, AT 15.", W - 2 * M, {}), 180);
+    txt("FIRST SETS", M, 330, { f: "m", size: 20, color: K.muted, alpha: lin(t, t0, t0 + 0.1) });
+    rise("SEXBIERUM, AT 15.", M, 360 + size, { size }, lin(t, t0, t0 + 0.35));
+    rise([["IT ESCALATED", K.paper], [".", K.itr]], M, 360 + size * 2.15, { size }, lin(t, L.at(5, 2), L.at(5, 2) + 0.3));
+  }
+  hud(t);
+}
+
+// E · the build. 150 -> 175, every beat a vibe, the hot ones in blue.
+function sceneE(t) {
+  const bt = beatAt(t), i = TL.beats.indexOf(bt.b) - TL.beats.findIndex(b => b.sec === "E");
+  const words = ["MELODIC", "MELODIC", "HOUSE", "HOUSE", "TECHNO", "TECHNO", "HARD", "HARD", "HARD", "CHAOS", "HARD", "CHAOS", "CHAOS", "CHAOS", "CHAOS", "CHAOS"];
+  const w = words[clamp(i, 0, 15)], inv = i >= 9 && i % 2 === 1 && bt.f < 0.5;
+  fill(inv ? K.paper : K.ink);
+  const pk = punch(t, ["techno"], 0.08);
+  let size = Math.min(fit(w, W - 2 * M, {}), 380) * (1 + 0.05 * pk + (i >= 12 ? 0.02 * (i - 11) * bt.f : 0));
+  const base = 640;
+  const col = inv ? K.ink : (w === "CHAOS" && i >= 14 ? K.itr : K.paper);
+  if (w === "CHAOS" && !inv) {
+    // chaos is sliced, not polished
+    const n = 7, amp = 6 + 4 * (i - 8);
+    for (let s = 0; s < n; s++) {
+      const y0 = base - size * 0.78 + s * size * 0.8 / n;
+      x.save(); x.beginPath(); x.rect(0, y0, W, size * 0.8 / n + 1); x.clip();
+      txt(w, W / 2 + (hash(i * 13 + s + Math.floor(t * 30)) - 0.5) * amp * 2, base, { size, align: "center", color: col });
+      x.restore();
+    }
+  } else {
+    txt(w, W / 2, base, { size, align: "center", color: col });
+  }
+  vibeTag(w, W / 2 + mw(w, { f: "m", size: 15, weight: 700, track: 0.1 }) / 2 + 14, 330, 1);
+  // the tempo, climbing
+  const bpm = Math.round(bt.b.bpm + (i < 15 ? (TL.beats[bt.k + 1].bpm - bt.b.bpm) * clamp(bt.f) : 0));
+  txt(String(bpm), M, 900, { size: 96, color: bpm >= 175 ? K.itr : (inv ? K.ink : K.muted) });
+  txt("BPM", M + mw(String(bpm), { size: 96 }) + 16, 900, { f: "m", size: 20, color: inv ? K.ink : K.muted });
+  if (i >= 14) txt("04:00 · 175 BPM · THE DROP", W - M, 900, { f: "m", size: 20, align: "right", color: inv ? K.ink : K.paper });
+  if (!inv) hud(t, { brand: 1, caption: "" });
+}
+
+// F · 04:00 · 175 BPM. The drop is the booking CTA.
+function sceneF(t) {
+  const L = loc(t, "F"), pk = punch(t, ["hard"], 0.07);
+  const shake = (k) => (hash(Math.floor(t * 60) + k) - 0.5) * 10 * pk;
+  const flash = (L.i === 4 || L.i === 6) && L.bt < 0.05;
+  fill(flash ? K.paper : K.ink2);
+  const ink = flash ? K.ink : K.paper;
+  if (L.bar < 2) {
+    const size = Math.min(fit("BOOK", W - 2 * M, {}), 420);
+    txt([["04:00 · 175 BPM · ", K.muted], ["THE DROP", flash ? K.ink : K.itr]], M, 170, { f: "m", size: 18 });
+    const slam = (t0) => { const p = lin(t, t0, t0 + 0.1); return { s: 1 + 0.25 * (1 - eo(p)), a: p }; };
+    [["BOOK", 0, 560], ["ME", 2, 560 + size * 0.95]].forEach(([wd, pos, y]) => {
+      const { s, a } = slam(L.at(0, pos));
+      if (a <= 0) return;
+      x.save(); x.translate(M + shake(1), y + shake(2)); x.scale(s * (1 + 0.02 * pk), s * (1 + 0.02 * pk));
+      txt(wd, 0, 0, { size, color: ink, alpha: a }); x.restore();
+    });
+  } else if (L.bar < 4) {
+    const items = ["CLUBS.", "FESTIVALS.", "PRIVATE PARTIES.", "UNDERGROUND RAVES."];
+    const cur = Math.floor((L.i - 8) / 2);
+    items.forEach((it, k) => {
+      if (k > cur) return;
+      const p = lin(t, L.at(2, k * 2), L.at(2, k * 2) + 0.1);
+      txt(it, M + (k === cur ? shake(k) : 0) - 60 * (1 - eo(p)), 300 + k * 150, { size: 128, color: k === cur ? ink : K.muted, alpha: p });
+    });
+    txt("FROM INTIMATE HOUSE PARTIES TO ADE.", M, 910, { f: "m", size: 20, color: K.muted, alpha: lin(t, L.at(3, 2), L.at(3, 2) + 0.1) });
+  } else if (L.bar === 4) {
+    const shots = [IMG.goto, IMG.ade, IMG.bb, IMG.sax];
+    cover(shots[L.pos], 0, 0, W, H, 1.08 + 0.04 * pk, 0.5, 0.4, 0.45);
+    x.fillStyle = K.ink; x.fillRect(0, 400, W, 290);
+    hline(0, W, 400, K.line); hline(0, W, 690, K.line);
+    const line = L.pos < 2 ? "CONFERENCE AFTER-PARTIES." : "YES, DEVELOPERS PARTY HARD.";
+    const size = fit("YES, DEVELOPERS PARTY HARD.", W - 2 * M, {});
+    txt(line, M + shake(3), 545 + size * 0.36, { size });
+  } else if (L.bar === 5) {
+    const facts = [["GEAR", "TRAKTOR, OR", "YOUR CDJS."], ["RANGE", "AMSTERDAM,", "AND BEYOND."], ["SET LENGTH", "1 HOUR TO", "ALL NIGHT."]];
+    const cw = (W - 2 * M) / 3;
+    facts.forEach(([h, a1, a2], k) => {
+      const a = lin(t, L.at(5, k), L.at(5, k) + 0.08);
+      if (a <= 0) return;
+      box(M + k * cw, 300, cw, 420, K.line, a);
+      txt(h, M + k * cw + 36, 360, { f: "m", size: 17, weight: 700, color: K.itr, alpha: a });
+      txt(a1, M + k * cw + 36, 560, { size: 64, alpha: a });
+      txt(a2, M + k * cw + 36, 640, { size: 64, alpha: a });
+    });
+    txt("NO DRAMA. NO RIDER THEATRICS.", M, 820, { f: "m", size: 22, alpha: lin(t, L.at(5, 3), L.at(5, 3) + 0.08) });
+  } else {
+    const size = fit("dj@itsrene.nl", W - 2 * M, { weight: 800 });
+    txt("EMAIL FOR BOOKINGS", M, 400, { f: "m", size: 20, color: K.muted });
+    const p = lin(t, L.at(6), L.at(6) + 0.12);
+    x.save(); x.translate(M + shake(4), 420 + size * 0.95 + shake(5)); const s = 1 + 0.2 * (1 - eo(p)) + 0.015 * pk; x.scale(s, s);
+    txt("dj@itsrene.nl", 0, 0, { size, weight: 800, track: -0.01, color: K.itr, alpha: p }); x.restore();
+    txt([["NEED PHOTOS, BIOS, THE RIDER? ", K.muted], ["ITSRENE.DJ/PRESS", K.paper]], M, 420 + size * 0.95 + 110, { f: "m", size: 20, alpha: lin(t, L.at(7), L.at(7) + 0.1) });
+  }
+  hud(t, { caption: "" });
+}
+
+// G · the ident: braces snap in, the word flips up, braces slam shut.
+function sceneG(t) {
+  fill(K.ink);
+  const h = TL.hits, size = 170, cy = 560;
+  const ww = mw("IT'S RENÉ", { size });
+  const bs = 300, gap = ww / 2 + 70;
+  const shut = eo(lin(t, h.shut, h.shut + 0.12));
+  const half = gap - (gap - 36) * shut;
+  const fade = 1 - lin(t, 58.2, 58.85);
+  x.globalAlpha = fade;
+  const inL = eo5(lin(t, h.brace_l, h.brace_l + 0.1)), inR = eo5(lin(t, h.brace_r, h.brace_r + 0.1));
+  if (inL > 0) txt("{", W / 2 - half - 260 * (1 - inL), cy + bs * 0.33, { size: bs, weight: 500, color: K.itr, align: "right", alpha: fade * inL });
+  if (inR > 0) txt("}", W / 2 + half + 260 * (1 - inR), cy + bs * 0.33, { size: bs, weight: 500, color: K.itr, align: "left", alpha: fade * inR });
+  x.save(); x.beginPath(); x.rect(W / 2 - half + 10, 0, 2 * half - 20, H); x.clip();
+  rise([["IT'S REN", K.paper], ["É", K.itr]], W / 2 - ww / 2, cy + size * 0.36, { size, alpha: fade * (1 - lin(t, h.shut, h.shut + 0.06)) }, lin(t, h.word, h.word + 0.4));
+  x.restore();
+  txt("AMSTERDAM · AVAILABLE WORLDWIDE", W / 2, 790, { f: "m", size: 20, align: "center", color: K.muted, alpha: fade * lin(t, h.word + 0.4, h.word + 0.7) });
+  txt([["WWW.ITSRENE.DJ", K.paper], ["   ·   ", K.muted], ["DJ@ITSRENE.NL", K.itr]], W / 2, 840, { f: "m", size: 24, weight: 700, align: "center", alpha: fade * lin(t, h.url, h.url + 0.2) });
+  txt("SONG REQUESTS: NO.", W / 2, H - 70, { f: "m", size: 15, align: "center", color: K.muted, alpha: fade * lin(t, 56.5, 56.8) });
+  x.globalAlpha = 1;
+}
+
+function render(t) {
+  t = clamp(t, 0, TL.duration - 1e-4);
+  x.setTransform(1, 0, 0, 1, 0, 0);
+  x.globalAlpha = 1; x.globalCompositeOperation = "source-over";
+  const s = secAt(t).name;
+  if (s === "A") sceneA(t);
+  else if (s === "B") sceneB(t);
+  else if (s === "C") sceneC(t);
+  else if (s === "D") sceneD(t);
+  else if (s === "E") sceneE(t);
+  else if (s === "GAP") fill("#000");
+  else if (s === "F") sceneF(t);
+  else sceneG(t);
+  grain(t, s === "GAP" ? 0.03 : s === "G" ? 0.07 * (1 - lin(t, 58.3, 59)) : 0.075);
+}
+
+// ---------- boot ----------
+async function load() {
+  const fonts = [["Archivo", "../fonts/archivo-var.woff2", { weight: "100 900", stretch: "62% 125%" }],
+    ["Inter", "../fonts/inter-var.woff2", { weight: "100 900" }],
+    ["JetBrains Mono", "../fonts/jetbrains-mono-var.woff2", { weight: "100 800" }]];
+  await Promise.all(fonts.map(async ([n, u, d]) => { const f = new FontFace(n, `url(${u})`, d); await f.load(); document.fonts.add(f); }));
+  const j = u => fetch(u).then(r => r.json());
+  [TL, STATS, GIGS] = await Promise.all([j("timeline.json"), j("../data/stats.json"), j("../data/gigs.json").then(g => g.gigs)]);
+  TL.sections.forEach(s => SEC[s.name] = s);
+  const imgs = { headshot: "headshot.jpg", goto: "actionshots/53799606763_6e1930e6e3_o.jpg", sax: "actionshots/53799606928_2f35cccc61_o.jpg",
+    ade: "actionshots/FB_IMG_1697890143498.jpg", bb: "actionshots/bb_summerparty.jpg" };
+  await Promise.all(Object.entries(imgs).map(([k, p]) => new Promise((ok, no) => {
+    const im = new Image(); im.onload = () => { IMG[k] = duotone(im); ok(); }; im.onerror = no; im.src = "../images/" + p;
+  })));
+  // film grain, generated once, deterministic
+  let seed = 7;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  for (let g = 0; g < 6; g++) {
+    const c = document.createElement("canvas"); c.width = 960; c.height = 540;
+    const gx = c.getContext("2d"), d = gx.createImageData(960, 540);
+    for (let i = 0; i < d.data.length; i += 4) { const v = rnd() ** 3 * 255; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 255; }
+    gx.putImageData(d, 0, 0); GRAIN.push(c);
+  }
+}
+
+window.render = render;
+window.ready = load().then(() => { render(0); return true; });
+
+// ---------- preview: audio is the clock ----------
+if (new URLSearchParams(location.search).has("capture")) document.body.classList.add("capture");
+else window.ready.then(() => {
+  const aud = document.getElementById("aud"), play = document.getElementById("play"), scrub = document.getElementById("scrub"), tc = document.getElementById("tc");
+  const hash0 = parseFloat(location.hash.slice(1));
+  if (hash0) { aud.currentTime = hash0; render(hash0); }
+  play.onclick = () => aud.paused ? aud.play() : aud.pause();
+  aud.onplay = () => play.textContent = "Pause"; aud.onpause = () => play.textContent = "Play";
+  scrub.oninput = () => { aud.currentTime = +scrub.value; render(+scrub.value); };
+  (function tick() {
+    if (!aud.paused) { render(aud.currentTime); scrub.value = aud.currentTime; }
+    tc.textContent = aud.currentTime.toFixed(2);
+    requestAnimationFrame(tick);
+  })();
+});
+})();
+</script>
+</body>
+</html>
