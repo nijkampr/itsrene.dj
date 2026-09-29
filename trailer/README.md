@@ -17,6 +17,14 @@ The concept is the site's concept ("The Build"): the trailer *is* a set. The tem
 
 Numbers come from `data/stats.json` and the timetable from `data/gigs.json` at render time, so a re-render after the weekly sync stays true.
 
+## The Instagram cut
+
+`?format=reel` renders the same 59 seconds at 1080×1920 for Reels. Same soundtrack, same beat grid, same scenes, re-laid out for a phone rather than cropped:
+
+- Type stacks instead of shrinking (MAIN / STREAM, UNDER / GROUND, TEAM / BRISK). Nothing that matters is under 28px.
+- Everything important sits between y 290 and 1500. The bottom ~400px and the right edge belong to Instagram's caption and buttons.
+- Cut for space: the stat row, the portrait caption, the depth labels, one of the Live copy lines, the full gig timetable (5 rows instead of 8), and the long lines in the drop.
+
 ## Files
 
 - `soundtrack.py`: synthesises the whole soundtrack from numpy sine waves and noise (no samples, no licences) and writes `timeline.json`, the beat grid everything else cuts on.
@@ -33,6 +41,7 @@ python3 -m http.server 8000 &                # from the repo root
 open http://localhost:8000/trailer/trailer.html   # preview with sound
 node trailer/capture.mjs                     # -> build/itsrene-trailer.mp4 (needs playwright + ffmpeg with libx264)
 node trailer/capture.mjs --stills 12.5 44    # single frames as PNG
+node trailer/capture.mjs --reel              # -> build/itsrene-trailer-reel.mp4 (1080×1920)
 ```
 
 `FFMPEG=/path/to/ffmpeg` and `PLAYWRIGHT=/path/to/playwright` override the defaults.

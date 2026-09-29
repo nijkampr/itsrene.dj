@@ -3,6 +3,7 @@
 //
 //   node trailer/capture.mjs                      -> trailer/build/itsrene-trailer.mp4
 //   node trailer/capture.mjs --stills 3.2 17 44   -> trailer/build/still-*.png
+//   add --reel to either for the 1080x1920 Instagram cut (itsrene-trailer-reel.mp4, reel-*.png)
 //
 // Needs: a static server on :8000 at the repo root (python3 -m http.server 8000),
 // playwright (global), and an ffmpeg with libx264 (FFMPEG env var, or on PATH).
@@ -17,14 +18,16 @@ const { chromium } = require(process.env.PLAYWRIGHT || "playwright");
 const HERE = dirname(fileURLToPath(import.meta.url));
 const OUT = join(HERE, "build");
 const FPS = 30, DUR = 59;
-const args = process.argv.slice(2);
+const REEL = process.argv.includes("--reel");
+const args = process.argv.slice(2).filter(a => a !== "--reel");
+const [VW, VH] = REEL ? [1080, 1920] : [1920, 1080];
 mkdirSync(OUT, { recursive: true });
 
 const browser = await chromium.launch({ args: ["--force-color-profile=srgb"] });
-const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 });
+const page = await browser.newPage({ viewport: { width: VW, height: VH }, deviceScaleFactor: 1 });
 page.on("console", m => m.type() === "error" && console.error("page:", m.text()));
 page.on("pageerror", e => console.error("page error:", e.message));
-await page.goto("http://localhost:8000/trailer/trailer.html?capture", { waitUntil: "load" });
+await page.goto(`http://localhost:8000/trailer/trailer.html?capture${REEL ? "&format=reel" : ""}`, { waitUntil: "load" });
 await page.evaluate(() => window.ready);
 
 const frame = (t, type) => page.evaluate(([t, type]) => {
@@ -34,11 +37,11 @@ const frame = (t, type) => page.evaluate(([t, type]) => {
 
 if (args[0] === "--stills") {
   for (const s of args.slice(1)) {
-    writeFileSync(join(OUT, `still-${s}.png`), Buffer.from(await frame(+s, "image/png"), "base64"));
+    writeFileSync(join(OUT, `${REEL ? "reel" : "still"}-${s}.png`), Buffer.from(await frame(+s, "image/png"), "base64"));
   }
   console.log(`${args.length - 1} stills -> ${OUT}`);
 } else {
-  const out = join(OUT, "itsrene-trailer.mp4");
+  const out = join(OUT, REEL ? "itsrene-trailer-reel.mp4" : "itsrene-trailer.mp4");
   const ff = spawn(process.env.FFMPEG || "ffmpeg", [
     "-y", "-loglevel", "error",
     "-f", "image2pipe", "-framerate", String(FPS), "-c:v", "png", "-i", "-",
